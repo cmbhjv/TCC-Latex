@@ -242,4 +242,5 @@ TSWLatexianTemp*
 *.spl
 
 #others
-.vscode/
+vscode
+.code-workspace

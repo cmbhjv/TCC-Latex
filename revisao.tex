@@ -104,41 +104,117 @@ No método \textit{k-fold} de validação cruzada, os dados de treinamento são 
     \label{fig:dim_perf}
 \end{figure}
 
-Um caso especial do método descrito é o \textit{leave-one-out cross-validation} (LOOCV), onde k é igual ao total de amostras disponíveis (N), ou seja, o treinamento é realizado N vezes com N-1 amostras, e validado na amostra excluída. Tal abordagem apesar de apresentar, em geral, um custo computacional elevado, resulta em um modelo com menor variabilidade e viés para modelos de regressão linear \cite{burman}, produzindo assim resultados com melhor performance e menos \textit{overfitting}.
+Um caso especial do método descrito é o \textit{leave-one-out cross-validation} (LOOCV), onde k é igual ao total de 
+amostras disponíveis (N), ou seja, o treinamento é realizado N vezes com N-1 amostras, e validado na amostra excluída.
+ Tal abordagem apesar de apresentar, em geral, um custo computacional elevado, resulta em um modelo com menor 
+ variabilidade e viés para modelos de regressão linear \cite{burman}, produzindo assim resultados com melhor 
+ performance e menos \textit{overfitting}.
 
 \subsection{ \textit{Leave-one-out Cross-validation} e Regressão Linear}
 
-Especificamente para o caso do preditor linear, é possível determinar o resultado do LOOCV sem a necessidade de se calcular N preditores, tornando essa uma estratégia interessante para determinar a capacidade de generalização de um modelo linear. A seguir, a forma algébrica fechada para esse resultado é deduzida.
+Especificamente para o caso do preditor linear, é possível determinar o resultado do LOOCV sem a necessidade de se 
+calcular N preditores, tornando essa uma estratégia interessante para determinar a capacidade de generalização de 
+um modelo linear. A seguir uma dedução adaptada de \cite[p. 268]{lin_reg_analysis} é apresentada.
 
-% Sejam:
-
-% \smallskip\noindent
-
-% \begin{equation}
-%     \begin{split}
-%         \hat{Y} &= \phi(X)W = \phi(X)A^{-1}\phi(X)^TY \\
-%         \hat{Y} &= PY \\
-%         P &= \phi(X)A^{-1}\phi(X)^T 
-%     \end{split} 
-% \end{equation} 
-
-% \begin{equation}
-%     R = I_N - P = I_N - \phi(X)A^{-1}\phi(X)^T
-%     \label{eq:err_matrix}
-% \end{equation}
-
-% Onde P é conhecida como matriz de projeção \cite{applied_matrix_algebra} ou matriz chapéu.
 O erro de LOOCV corresponde a média dos erros quadráticos de cada estimador obtido excluindo-se uma amostra. 
 
 \begin{equation}
-    CV = \dfrac{1}{N} \sum_{i=1}^{N}e^2_{[i]}
+    LOOCV = \dfrac{1}{N} \sum_{i=1}^{N}e^2_{[i]}
+    \label{eq:cv_error}
 \end{equation}
-Onde $i$ denota o índice da amostra excluída no treinamento e $e_{[i]} = y_i - \hat{y}_i$.
+\begin{equation}
+    e_{[i]} = y_i - \hat{y}_{[i]} = y_i - x_iW_{[i]} 
+    \label{eq:ith_error}
+\end{equation}
+Onde o $i$ indexa a amostra excluída no treinamento, $\hat{y}_{[i]}$ corresponde à saída do preditor calculado sem a
+amostra $(x_i,y_i)$ e $W_{[i]}$ os parâmetros desse preditor.
 
-Pode-se definir o vetor de parâmetros $W_{[i]} = A_{[i]}^{-1}\phi(X)_{[i]}^TY_{[i]}$ e é fácil perceber que:
-$${\phi(X)}_{[i]}^TY_{[i]} = \phi(X)^T*Y - x_ix_i^T$$
+Pode-se definir o vetor de parâmetros $W_{[i]}$ conforme a eq. \ref{eq:wi}.
+\begin{equation}
+    W_{[i]} = A_{[i]}^{-1}\phi(X)_{[i]}^TY_{[i]}
+    \label{eq:wi}
+\end{equation} 
 
-Pela formula de Sherman–Morrison, temos também que:
+É possivel perceber as seguintes igualdades:
+\smallskip\noindent
+\begin{equation}
+    \begin{split}
+        A_{[i]} &= \lambda I + \phi(X)_{[i]}^T\phi(X)_{[i]} \\
+                &= \lambda I + \phi(X)^T\phi(X) - x_i^Tx_i \\
+                &= A - x_i^Tx_i    
+    \end{split}
+    \label{eq:ai_identity}
+\end{equation} 
 
+\begin{equation}
+    \phi(X)_{[i]}^TY_{[i]} = \phi(X)^TY - x_i^Ty_i
+    \label{eq:X_iY_i_identity}
+\end{equation} 
 
+Aplicando a formula de Sherman–Morrison à eq. \ref{eq:ai_identity}, temos:
+\smallskip\noindent
+\begin{equation}
+    \begin{split}        
+       h_i &= x_iA^{-1}x_i^T \\
+       A_{[i]}^{-1} &= A^{-1} + \dfrac{A^{-1}x_ix_i^TA^{-1}}{1-h_i}
+    \end{split}
+    \label{eq:sherman}
+\end{equation}
 
+Substituindo as eq. \ref{eq:X_iY_i_identity} e \ref{eq:sherman} na eq. \ref{eq:wi}.
+\smallskip\noindent
+\begin{equation}
+    \begin{split}
+        W_{[i]} &= \left(A^{-1} + \dfrac{A^{-1}x_i^Tx_iA^{-1}}{1-h_i}\right) \left(\phi(X)^TY - x_i^Ty_i\right)\\
+                &= W - A^{-1}x_i^Ty_i + \dfrac{A^{-1}x_i^Tx_iW}{1-h_i} - \dfrac{A^{-1}x_i^Tx_iA^{-1}x_i^Ty_i}{1-h_i} \\
+                &= W - \dfrac{A^{-1}x_i^T}{1-h_i}\left(  y_i(1-h_i)-x_iW  + h_iy_i \right)  \\
+                &= W - \dfrac{A^{-1}x_i^T}{1-h_i}\left(  y_i-\hat{y}_i \right)  \\
+    \end{split}
+    \label{eq:wi_expandido}
+\end{equation}
+
+Substituindo as eq. \ref{eq:wi_expandido} na eq. \ref{eq:ith_error}.
+\smallskip\noindent
+\begin{equation}
+    \begin{split}
+        e_{[i]} &= y_i - x_iW_{[i]} \\
+                &= y_i - x_i\left( W - \dfrac{A^{-1}x_i^T}{1-h_i}\left(  y_i-\hat{y}_i \right) \right) \\
+                &= y_i - \hat{y}_i + \dfrac{h_i}{1-h_i}\left(  y_i-\hat{y}_i \right) \\
+                &= \dfrac{y_i- \hat{y}_i}{1-h_i}
+    \end{split}    
+    \label{eq:ith_error_expandido}
+\end{equation}
+
+Seja $P$ a matriz de projeção \cite[p. 303]{applied_matrix_algebra} do preditor (também conhecida como matriz chapéu
+ \cite[p. 266]{lin_reg_analysis}) e a matriz $R$ definida conforme a eq. \ref{eq:proj_res_matrix}
+\smallskip\noindent
+\begin{equation}
+    \begin{split}
+        \hat{Y} &= PY \implies P = XA^{-1}X^T \\
+        RY &= Y - \hat{Y} \implies R = I - P = I - XA^{-1}X^T
+    \end{split}    
+    \label{eq:proj_res_matrix}
+\end{equation}
+
+Para cada índice $i$, o numerador da eq. \ref{eq:ith_error_expandido} corresponde a linha de mesmo índice da matriz $RY$. 
+Além disso o denominador da equação corresponde ao elemento da diagonal da matriz $R$ de mesmo índice. 
+A partir dessas observações, pode-se agrupar todos os valores de $e_{[i]}$ na forma da matriz $E_{LOOCV}$, conforme a equação \ref{eq:e_cv}.
+\smallskip\noindent
+\begin{equation}
+    \begin{split}
+        E_{LOOCV} = diag(R)^{-1}RY
+    \end{split}    
+    \label{eq:e_cv}
+\end{equation}
+
+Dessa forma a eq. \ref{eq:cv_error} pode ser reescrita conforme eq. \ref{eq:LOOCV_error}.
+
+\begin{equation}
+    \begin{split}
+        LOOCV   &= \dfrac{1}{N} \sum_{i=1}^{N}e^2_{[i]} \\
+                &= \dfrac{1}{N} E_{LOOCV}^2 \\
+                &= \dfrac{1}{N}E_{LOOCV}^TE_{LOOCV} \\
+                &= \dfrac{1}{N} Y^TR\ diag(R)^{-2}RY \\
+    \end{split}
+    \label{eq:LOOCV_error}
+\end{equation}

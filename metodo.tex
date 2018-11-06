@@ -2,25 +2,53 @@
 
 \section{Algoritmo}
 
-O algoritmo proposto é baseado no método de seleção de variáveis \textit{stepwise}, comumente utilizado em regressão linear. 
-Nele cada variável é ajustada isoladamente à saída e a performance dos modelos são aferidas; seleciona-se a variável que apresentar
-o melhor resultado. 
+\subsection{Seleção de Variáveis \textit{Stepwise}}
 
-Ajustam-se novamente modelos considerando-se cada uma das variáveis restantes em conjunto com as previamente selecionadas; a 
-variável correspondente ao modelo de melhor performance é adicionada ao conjunto de variáveis selecionadas. Repete-se o procedimento
-até que não haja mais melhora de performance nos modelos treinados, ou esgotem-se as variáveis.
+O algoritmo proposto é baseado no método de seleção de variáveis \textit{stepwise} (\textit{Stepwise Selection}), 
+comumente utilizado em regressão linear. Nele cada variável é ajustada isoladamente à saída e a performance dos 
+modelos são aferidas; seleciona-se a variável que apresentar o melhor resultado. 
+
+Ajustam-se novamente modelos considerando-se cada uma das variáveis restantes em conjunto com as previamente 
+selecionadas; a variável correspondente ao modelo de melhor performance é adicionada ao conjunto de variáveis 
+selecionadas. Repete-se o procedimento até que não haja mais melhora de performance nos modelos treinados, ou 
+esgotem-se as variáveis.
 
 \begin{algorithm}
     \caption{\textit{Forward Stepwise Selection}}
-    \begin{algorithmic}
-        \Function{$forwardSelection$}{$variáveis,saídas,limiar$}
-            \State $selecionadas \gets NULL$
-            \Repeat
-            \State $melhorErro \gets \infty$
-            \ForAll{$variáveis$}
-            
-            \EndFor
-            \Until{$variáveis == NULL ou erro<limiar$}
-        \EndFunction
-    \end{algorithmic}
+    \KwIn{$variáveis$: lista contendo as variáveis disponíveis;}
+    \KwIn{$saídas$: lista contendo as saídas do modelo;}
+    \KwIn{$limiar$: limite superior aceitável de erro;}
+    \KwOut{$selecionadas$: lista de variáveis relevantes.}
+    \ \\
+    $selecionadas \gets \{\ \}$ \\
+    $melhorErro \gets \infty$ \\
+    \ \\
+    \Repeat{$variáveis == \{\ \}$ ou $melhorErro < limiar$}
+    {   
+        $melhorVariável \gets NULL$ \\     
+        \ForEach{elemento $var$ de $variáveis$}{
+            $entradas \gets (var \cup selecionadas)$ \\
+            $M \gets ajuste(entradas,saídas)$ \\
+            $erro \gets avalia(M)$ \\
+            \If{$erro <melhorErro$}{
+                $melhorErro \gets erro$\\
+                $melhorVariável \gets var$ \\     
+            }
+        }
+        $selecionadas \gets (melhorVariável \cup selecionadas)$ \\
+        $variáveis \gets (variáveis \setminus \{melhorVariável\})$ \\
+    }
 \end{algorithm}
+
+Esse algoritmo apresenta uma redução expressiva na quantidade de modelos ajustados em relação ao método da 
+seleção do melhor subconjunto ($1+\sfrac{p^2+p)}{2}$ vs. $2^p$ ), porém não há
+garantia que o subconjunto determinado é a combinação ótima das variáveis. \cite[p. 208]{intro_stat_learn}
+
+A utilização de uma métrica de avaliação dos modelos que considere simplesmente os dados ajustados não é adequada, 
+uma vez que, nessa situação, o incremento de uma variável no modelo sempre acarretará em uma melhora no 
+erro de treinamento, porém não necessariamente na capacidade de generalização do modelo. Algumas técnicas tentam 
+determinar o erro de generalização através do ajuste do erro de treinamento, tais como o critério de Informação de 
+Akaike (AIC) ou critério de informação Bayesiano (BIC), porém elas se baseiam no comportamento assintótico, isto é,
+quando a quantidade de amostras é bastante elevada.
+
+Outra técnica possível

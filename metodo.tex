@@ -10,8 +10,8 @@ modelos são aferidas; seleciona-se a variável que apresentar o melhor resultad
 
 Ajustam-se novamente modelos considerando-se cada uma das variáveis restantes em conjunto com as previamente 
 selecionadas; a variável correspondente ao modelo de melhor performance é adicionada ao conjunto de variáveis 
-selecionadas. Repete-se o procedimento até que não haja mais melhora de performance nos modelos treinados, ou 
-esgotem-se as variáveis.
+selecionadas. Repete-se o procedimento até que não haja mais melhora na performance dos modelos treinados, ou 
+esgotem-se as variáveis. O método é descrito em pseudocódigo no algoritmo \ref{alg:stepwiseselection}
 
 \begin{algorithm}
     \caption{\textit{Forward Stepwise Selection}}
@@ -38,6 +38,7 @@ esgotem-se as variáveis.
         $selecionadas \gets (melhorVariável \cup selecionadas)$ \\
         $variáveis \gets (variáveis \setminus \{melhorVariável\})$ \\
     }
+    \label{alg:stepwiseselection}
 \end{algorithm}
 
 Esse algoritmo apresenta uma redução expressiva na quantidade de modelos ajustados em relação ao método da 
@@ -45,10 +46,13 @@ seleção do melhor subconjunto ($1+\sfrac{p^2+p)}{2}$ vs. $2^p$ ), porém não 
 garantia que o subconjunto determinado é a combinação ótima das variáveis. \cite[p. 208]{intro_stat_learn}
 
 A utilização de uma métrica de avaliação dos modelos que considere simplesmente os dados ajustados não é adequada, 
-uma vez que, nessa situação, o incremento de uma variável no modelo sempre acarretará em uma melhora no 
-erro de treinamento, porém não necessariamente na capacidade de generalização do modelo. Algumas técnicas tentam 
-determinar o erro de generalização através do ajuste do erro de treinamento, tais como o critério de Informação de 
-Akaike (AIC) ou critério de informação Bayesiano (BIC), porém elas se baseiam no comportamento assintótico, isto é,
-quando a quantidade de amostras é bastante elevada.
+uma vez que, nessa situação, o incremento de uma variável no modelo sempre acarretará em uma melhora no erro de 
+treinamento, porém não necessariamente na capacidade de generalização do modelo.
 
-Outra técnica possível
+Algumas técnicas tentam determinar o erro de generalização através do ajuste do erro de treinamento, tais como o 
+critério de Informação de Akaike (AIC) ou critério de informação Bayesiano (BIC), porém elas se baseiam no 
+comportamento assintótico, isto é, quando a quantidade de amostras é bastante elevada.
+
+Uma alternativa a essas técnicas é a utilização de validação cruzada, onde o modelo selecionado é 
+aquele que apresenta a melhor performance no conjunto de testes. Dessa maneira, obtém-se diretamente uma 
+estimativa do erro de generalização, 

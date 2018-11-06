@@ -1,4 +1,4 @@
-\chapter[Revisão de literatura ]{Revisão de literatura}
+\chapter[Fundamentação Teórica]{Fundamentação Teórica}
 
 Nesta seção são abordados conceitos fundamentais para a compreensão deste trabalho, assim como tendências atuais da literatura em relação ao tema estudado.
 
@@ -33,7 +33,7 @@ A inclusão de variáveis irrelevantes resulta no aumento da complexidade do mod
 Os modelos de regressão linear constituem uma classe de modelos que utilizam funções lineares com parâmetros ajustáveis. O exemplo mais simples dessa classe é a função que realiza a combinação linear das entradas com os parâmetros ajustados para gerar uma predição (eq. \ref{eq:lin_expandida}).
 
 \begin{equation}
-    \hat{y} = w_0 + w_1*x_1+ ... + w_Dx_D = \sum_{i = 0}^{D} w_i\phi(x_i) = \phi(X)W
+    \hat{y} = w_0 + w_1x_1+ ... + w_Dx_D = \sum_{i = 0}^{D} w_i\phi(x_i) = \phi(X)W
     \label{eq:lin_expandida}
 \end{equation}
 
@@ -186,35 +186,35 @@ Substituindo as eq. \ref{eq:wi_expandido} na eq. \ref{eq:ith_error}.
 \end{equation}
 
 Seja $P$ a matriz de projeção \cite[p. 303]{applied_matrix_algebra} do preditor (também conhecida como matriz chapéu
- \cite[p. 266]{lin_reg_analysis}) e a matriz $R$ definida conforme a eq. \ref{eq:proj_res_matrix}
+ \cite[p. 266]{lin_reg_analysis}) e a matriz de aniquilação $M$ \cite[p. 18]{econometrics} definida conforme a eq. \ref{eq:proj_res_matrix}
 \smallskip\noindent
 \begin{equation}
     \begin{split}
         \hat{Y} &= PY \implies P = XA^{-1}X^T \\
-        RY &= Y - \hat{Y} \implies R = I - P = I - XA^{-1}X^T
+        MY &= Y - \hat{Y} \implies M = I - P = I - XA^{-1}X^T
     \end{split}    
     \label{eq:proj_res_matrix}
 \end{equation}
 
-Para cada índice $i$, o numerador da eq. \ref{eq:ith_error_expandido} corresponde a linha de mesmo índice da matriz $RY$. 
-Além disso o denominador da equação corresponde ao elemento da diagonal da matriz $R$ de mesmo índice. 
+Para cada índice $i$, o numerador da eq. \ref{eq:ith_error_expandido} corresponde a linha de mesmo índice da matriz $MY$. 
+Além disso o denominador da equação corresponde ao elemento da diagonal da matriz $M$ de mesmo índice. 
 A partir dessas observações, pode-se agrupar todos os valores de $e_{[i]}$ na forma da matriz $E_{LOOCV}$, conforme a equação \ref{eq:e_cv}.
 \smallskip\noindent
 \begin{equation}
     \begin{split}
-        E_{LOOCV} = diag(R)^{-1}RY
+        E_{LOOCV} = diag(M)^{-1}MY
     \end{split}    
     \label{eq:e_cv}
 \end{equation}
 
-Dessa forma a eq. \ref{eq:cv_error} pode ser reescrita conforme eq. \ref{eq:LOOCV_error}.
+Como a matriz $M$ é simétrica, a eq. \ref{eq:cv_error} pode ser reescrita conforme eq. \ref{eq:LOOCV_error}.
 
 \begin{equation}
     \begin{split}
         LOOCV   &= \dfrac{1}{N} \sum_{i=1}^{N}e^2_{[i]} \\
                 &= \dfrac{1}{N} E_{LOOCV}^2 \\
                 &= \dfrac{1}{N}E_{LOOCV}^TE_{LOOCV} \\
-                &= \dfrac{1}{N} Y^TR\ diag(R)^{-2}RY \\
+                &= \dfrac{1}{N} Y^TM\ diag(R)^{-2}MY \\
     \end{split}
     \label{eq:LOOCV_error}
 \end{equation}

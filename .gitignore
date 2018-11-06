@@ -243,4 +243,5 @@ TSWLatexianTemp*
 
 #others
 vscode
-.code-workspace
+*.code-workspace
+*.json

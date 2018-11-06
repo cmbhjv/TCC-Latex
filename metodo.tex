@@ -1,1 +1,26 @@
 \chapter[Materiais e métodos]{Materiais e métodos}
+
+\section{Algoritmo}
+
+O algoritmo proposto é baseado no método de seleção de variáveis \textit{stepwise}, comumente utilizado em regressão linear. 
+Nele cada variável é ajustada isoladamente à saída e a performance dos modelos são aferidas; seleciona-se a variável que apresentar
+o melhor resultado. 
+
+Ajustam-se novamente modelos considerando-se cada uma das variáveis restantes em conjunto com as previamente selecionadas; a 
+variável correspondente ao modelo de melhor performance é adicionada ao conjunto de variáveis selecionadas. Repete-se o procedimento
+até que não haja mais melhora de performance nos modelos treinados, ou esgotem-se as variáveis.
+
+\begin{algorithm}
+    \caption{\textit{Forward Stepwise Selection}}
+    \begin{algorithmic}
+        \Function{$forwardSelection$}{$variáveis,saídas,limiar$}
+            \State $selecionadas \gets NULL$
+            \Repeat
+            \State $melhorErro \gets \infty$
+            \ForAll{$variáveis$}
+            
+            \EndFor
+            \Until{$variáveis == NULL ou erro<limiar$}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}

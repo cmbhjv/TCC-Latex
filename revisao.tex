@@ -67,7 +67,7 @@ O treinamento de modelos lineares consiste em encontrar o vetor de parâmetros $
 \end{equation}
 
 \begin{equation}\begin{split}
-    \pdv{E_{sq}(W)}{W} {}&= \frac{1}{2} \left( 0 - 2 \phi(X)^TY + 2\sum_{n = 1}^{N}\left(\phi(X_n)^T\phi(X_n) \right)W  \right) \\
+    \pdv{E_{sq}(W)}{W} &= \frac{1}{2} \left( 0 - 2 \phi(X)^TY + 2\sum_{n = 1}^{N}\left(\phi(X_n)^T\phi(X_n) \right)W  \right) \\
     &= - \phi(X)^TY + \phi(X)^T\phi(X) W
     \label{eq:min_sq_error}
 \end{split}\end{equation}
@@ -81,14 +81,20 @@ Igualando-se a eq. \ref{eq:min_sq_error} a zero e isolando o vetor $W$, obtém-s
     \label{eq:lsnormal}
 \end{split}\end{equation}
 
-O termo $(\phi(X)^T\phi(X))$ pode se aproximar de uma matriz singular se muitas das variáveis envolvidas forem linearmente dependentes, resultando assim em dificuldades para o cálculo numérico dos valores e possivelmente em um vetor de parâmetros de alta magnitude. Um termo de regularização na eq. \ref{eq:sq_error} resolve esse problema, garantindo que a nova matriz não é singular. A dedução da equação normal com termo de regularização é análoga à apresentada e o resulta na eq. \ref{eq:lsnormal_reg}.
+O termo $(\phi(X)^T\phi(X))$ pode se aproximar de uma matriz singular se muitas das variáveis envolvidas forem 
+linearmente dependentes, resultando assim em dificuldades para o cálculo numérico dos valores e possivelmente em 
+um vetor de parâmetros de alta magnitude. Um termo de regularização pode ser adicionado na eq. \ref{eq:sq_error} 
+para minimizar esse problema, garantindo que a nova matriz não é singular, essa técnica ficou conhecida como 
+\textit{Ridge regression}. A dedução da equação normal com termo de regularização é análoga à apresentada e o 
+resulta na eq. \ref{eq:lsnormal_reg}.
 
 \begin{equation}\begin{split}
     W &= (\lambda I + \phi(X)^T\phi(X))^{-1}\phi(X)^TY = A^{-1}\phi(X)_{[i]}^TY
     \label{eq:lsnormal_reg}
 \end{split}\end{equation}
 
-A adição do termo de regularização tem ainda o efeito de limitar a complexidade efetiva do modelo, reduzindo o \textit{overfitting} e possibilitando a utilização de conjuntos de dados menores \cite{bishop_2006}.
+A adição do termo de regularização tem ainda o efeito de limitar a complexidade efetiva do modelo, reduzindo o 
+\textit{overfitting} e possibilitando a utilização de conjuntos de dados menores \cite{bishop_2006}.
 
 \section{Validação Cruzada}
 
@@ -100,7 +106,7 @@ No método \textit{k-fold} de validação cruzada, os dados de treinamento são 
     \centering
     \caption{Validação cruzada: \textit{5-fold}.}
     \includegraphics[width=0.7\textwidth]{imgs/rev/cross_validation}
-    \legend{Fonte: Different types of Validations in Machine Learning (Cross Validation) \cite{cross_val}}
+    \legend{\textit{Fonte: Different types of Validations in Machine Learning (Cross Validation)} \cite{cross_val}}
     \label{fig:dim_perf}
 \end{figure}
 
@@ -173,7 +179,7 @@ Substituindo as eq. \ref{eq:X_iY_i_identity} e \ref{eq:sherman} na eq. \ref{eq:w
     \label{eq:wi_expandido}
 \end{equation}
 
-Substituindo as eq. \ref{eq:wi_expandido} na eq. \ref{eq:ith_error}.
+Substituindo a eq. \ref{eq:wi_expandido} na eq. \ref{eq:ith_error}.
 \smallskip\noindent
 \begin{equation}
     \begin{split}
@@ -186,7 +192,7 @@ Substituindo as eq. \ref{eq:wi_expandido} na eq. \ref{eq:ith_error}.
 \end{equation}
 
 Seja $P$ a matriz de projeção \cite[p. 303]{applied_matrix_algebra} do preditor (também conhecida como matriz chapéu
- \cite[p. 266]{lin_reg_analysis}) e a matriz de aniquilação $M$ \cite[p. 18]{econometrics} definida conforme a eq. \ref{eq:proj_res_matrix}
+ \cite[p. 266]{lin_reg_analysis}) e a matriz de aniquilação $M$ \cite[p. 18]{econometrics} definidas conforme a eq. \ref{eq:proj_res_matrix}
 \smallskip\noindent
 \begin{equation}
     \begin{split}
@@ -218,3 +224,117 @@ Como a matriz $M$ é simétrica, a eq. \ref{eq:cv_error} pode ser reescrita conf
     \end{split}
     \label{eq:LOOCV_error}
 \end{equation}
+
+
+\section{Aprendizado Incremental}
+
+A atualização dos parâmetros do modelo de regressão linear para uma nova amostra pode ser realizada de maneira 
+incremental, sem a necessidade de se calcular um novo modelo \cite{mit_onlinereg}. Nesse trabalho porém, é de 
+interesse calcular a atualização incremental do modelo ao se adicionar uma nova variável. Em especial, é de 
+interesse a determinação de uma forma fechada para a matriz de aniquilação, usada no calculo do erro de 
+validação cruzada.
+
+A matrizes de interesse para o problema de dimensão $p+1$ tem a forma descrita na eq. \ref{eq:inc_matrix} 
+\begin{equation}
+    \begin{split}
+    X_{p+1} &= \left[\mathbf{X_p}\ x_{p+1}\right] \\
+    Y_{p+1} &= \left[\mathbf{Y_p}\ y_{p+1}\right] \\
+    A_{p+1} &= (X_{p+1}^T X_{p+1} + \lambda I ) = 
+    \begin{bmatrix}
+        \mathbf{A_p} & \mathbf{X_p}^T x_{p+1} \\
+        x_{p+1}^T \mathbf{X_p} & x_{p+1}^T x_{p+1} + \lambda
+    \end{bmatrix}  \\
+    M_{p+1} &= I - X_{p+1} A_{p+1}^{-1} X_{p+1}^T \\ 
+    \end{split}  
+    \label{eq:inc_matrix}
+\end{equation}
+
+É necessário então determinar a matriz $A_{p+1}^{-1}$ em função das matrizes já conhecidas. Para tal, aplica-se 
+a identidade da inversa de uma matriz em blocos, conforme a eq. \ref{eq:blockinverse}, na matriz $A_{p+1}$.
+\smallskip
+\begin{equation}
+    \begin{split}
+        \Delta &= (\mathbf{D}-\mathbf{CA}^{-1}\mathbf{B}) \\
+        \begin{bmatrix}
+            \mathbf{A} & \mathbf{B} \\ 
+            \mathbf{C} & \mathbf{D} 
+        \end{bmatrix}^{-1} &= 
+        \begin{bmatrix} 
+            \mathbf{A}^{-1} & 0 \\ 
+            0 & 0 
+        \end{bmatrix} +        
+        \begin{bmatrix} 
+            \mathbf{A}^{-1}\mathbf{B}\Delta^{-1}\mathbf{CA}^{-1} & -\mathbf{A}^{-1}\mathbf{B}\Delta^{-1} \\ 
+            -\Delta^{-1}\mathbf{CA}^{-1} & \Delta^{-1} 
+        \end{bmatrix}
+    \end{split}
+    \label{eq:blockinverse}
+\end{equation}
+
+Através da eq. \ref{eq:inc_matrix}, obtém-se os termos $A$, $B$, $C$, $D$ e $\Delta$ na eq. 
+\ref{eq:blockinverse_terms}.
+\smallskip
+\begin{equation}
+    \begin{split}
+        A &= A_p \\
+        B &= X_p^T x_{p+1} \\
+        C &= x_{p+1}^T X_p = B^T \\
+        D &= \lambda + x_{p+1}^T x_{p+1} \\
+        \Delta &= \lambda + x_{p+1}^T x_{p+1} - x_{p+1}^T X_p A_p ^{-1} X_p^T x_{p+1}
+    \end{split}
+    \label{eq:blockinverse_terms}
+\end{equation}
+
+O termo $\Delta$ pode ser simplificado para a forma da eq. \ref{eq:delta_expanded}.
+\begin{equation}
+    \begin{split}
+        \Delta &= \lambda + x_{p+1}^T x_{p+1} - x_{p+1}^T X_p A_p ^{-1} X_p^T x_{p+1} \\
+                &= \lambda + x_{p+1}^T(I x_{p+1} - X_p A_p ^{-1} X_p^T x_{p+1}) \\
+                &= \lambda + x_{p+1}^T(I - X_p A_p ^{-1} X_p^T)x_{p+1} \\
+                &= \lambda + x_{p+1}^T M_p x_{p+1}
+    \end{split}
+    \label{eq:delta_expanded}
+\end{equation}
+
+Substituindo, obtém-se a eq. \ref{eq:A_inc_inverse}
+
+\smallskip
+\begin{equation}
+    \begin{split}A_{p+1}^{-1} &= 
+        \begin{bmatrix} 
+            \mathbf{A}^{-1} & 0 \\ 
+            0 & 0 
+        \end{bmatrix} + \dfrac{1}{\Delta}
+        \begin{bmatrix} 
+            \mathbf{A}^{-1}\mathbf{B}\mathbf{CA}^{-1} & -\mathbf{A}^{-1}\mathbf{B} \\ 
+            -\mathbf{CA}^{-1} & 1 
+        \end{bmatrix} \\
+        &= 
+        \begin{bmatrix} 
+            \mathbf{A_p}^{-1} & 0 \\ 
+            0 & 0 
+        \end{bmatrix} + \dfrac{1}{\Delta}
+        \begin{bmatrix} 
+            A_p^{-1} (X_p^T x_{p+1})  (X_p^T x_{p+1})^T A_p^{-1} & - A_p^{-1} (X_p^T x_{p+1}) \\ 
+            - (X_p^T x_{p+1})^T A_p^{-1} & 1 
+        \end{bmatrix} \\
+        &= 
+        \begin{bmatrix} 
+            \mathbf{A_p}^{-1} & 0 \\ 
+            0 & 0 
+        \end{bmatrix} + \dfrac{1}{\Delta}
+        \begin{bmatrix} 
+            A_p^{-1} (X_p^T x_{p+1}) \\ 
+            -1 
+        \end{bmatrix}
+        \begin{bmatrix} 
+            (X_p^T x_{p+1})^T A_p^{-1}& -1\\             
+        \end{bmatrix} \\
+    \end{split}
+    \label{eq:A_inc_inverse}
+\end{equation}
+
+Por fim, substituindo a eq. \ref{eq:A_inc_inverse} no termo $M_{p+1}$ da eq. \ref{eq:inc_matrix}, obtém-se
+a expressão para a nova matriz de aniquilação.
+
+

@@ -242,10 +242,5 @@ TSWLatexianTemp*
 *.spl
 
 #others
-<<<<<<< HEAD
-.vscode
-=======
-vscode
->>>>>>> 24249561deda72bd627c4941470548d41fa8ed0d
 *.code-workspace
 *.json

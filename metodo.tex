@@ -1,4 +1,4 @@
-\chapter[Desenvolvimento]{Desenvolvimento}
+\chapter[Desenvolvimento e Metodologia]{Desenvolvimento e Metodologia}
 
 \section{Algoritmo}
 
@@ -21,14 +21,13 @@ algoritmo \ref{alg:stepwiseselection}
     \ \\
     $selecionadas \gets \{\ \}$ \\
     $melhorErro \gets \infty$ \\
-    \ \\
     \Repeat{$variáveis == \{\ \}$ ou (critério de parada)}
     {   
         $melhorVariável \gets NULL$ \\     
         \ForEach{elemento $var$ em $variáveis$}{
             $entradas \gets (var \cup selecionadas)$ \\
-            $M \gets ajuste(entradas,saídas)$ \\
-            $erro \gets avalia(M)$ \\
+            $model \gets ajuste(entradas,saídas)$ \\
+            $erro \gets avalia(model,entradas,saídas)$ \\
             \If{$erro <melhorErro$}{
                 $melhorErro \gets erro$\\
                 $melhorVariável \gets var$ \\     
@@ -42,7 +41,7 @@ algoritmo \ref{alg:stepwiseselection}
 
 Esse algoritmo apresenta uma redução expressiva na quantidade de modelos ajustados em relação ao método da 
 seleção do melhor subconjunto ($1+\sfrac{(p^2+p)}{2}$ vs. $2^p$ ), porém não há
-garantia que o subconjunto determinado é a combinação ótima das variáveis. \cite[p. 208]{intro_stat_learn}
+garantia que o subconjunto determinado é a combinação ótima das variáveis \cite[p. 208]{intro_stat_learn}.
 
 A utilização de uma métrica de avaliação que considere simplesmente os dados ajustados não é adequada, 
 uma vez que, nessa situação, o incremento de uma variável no modelo sempre acarretará em uma melhora no erro de 
@@ -58,13 +57,69 @@ de generalização, além de se assumir menos condições em relação ao modelo
 desafio dessa técnica é o custo computacional da validação cruzada que, quando associado ao custo do método de 
 seleção de variáveis \textit{stepwise} pode tornar proibitiva sua implementação.
 
-Em especial, utilização desse método associado ao \textit{leave-one-out cross-validation} resultaria no ajuste 
-de $\sfrac{1}{2}(p^2+p+2)(N-1)$ modelos. Tornando o custo do algoritmo crescente com tanto o número de 
-dimensões, quanto o número de amostras utilizados.
+Em especial, a utilização desse método associada ao \textit{leave-one-out cross-validation} resultaria no ajuste 
+de $\sfrac{1}{2}(p^2+p+2)(N-1)$ modelos. Tornando o custo do algoritmo inviável mesmo com o crescimento .
 
 \subsection{Método Incremental}
 
 Para minimizar o problema do custo computacional, o método implementado utiliza o resultado apresentado na eq. 
 \ref{eq:LOOCV_error} para calcular o erro de validação cruzada sem a necessidade de cálcular $N-1$ modelos de 
-regressão linear. Além disso, o cálculo da matriz de aniquilação é realizado de maneira incremental, utilizando
-a matriz calculada na iteração anterior.
+regressão linear. Além disso, o cálculo da matriz de aniquilação é realizado de maneira incremental, conforme 
+deduzido na eq. \ref{eq:inc_matrix_iterativa}.
+
+O algoritmo \ref{alg:stepwiseselection} é então modificado para realizar o cálculo incremental, utilizando 
+LOOCV como métrica para seleção dos das variáveis e atualização incremental do modelo.
+
+\begin{algorithm}[H]
+    \caption{\textit{Forward Stepwise Incremental Selection}}
+    \KwIn{$variáveis$: lista contendo as variáveis disponíveis;}
+    \KwIn{$saídas$: lista contendo as saídas do modelo;}
+    \KwOut{$selecionadas$: lista de variáveis relevantes.}
+    \ \\
+    $selecionadas \gets \{\ \}$ \\
+    $melhorErro \gets \infty$ \\
+    $M \gets I_N$ \\
+
+    \Repeat{$variáveis == \{\ \}$ ou (critério de parada)}
+    { 
+        $melhorVariável \gets NULL$ \\
+        \ForEach{elemento $var$ em $variáveis$}{
+            $M' \gets ajusteIncremental(M,var)$ \\
+            $erro  \gets erroLOOCV(M,saídas)$ \\
+            \If{$erro <melhorErro$}{
+                $melhorErro \gets erro$\\
+                $melhorVariável \gets var$ \\                
+                $melhorM \gets M' $  \\
+            }
+        }
+        $M \gets melhorM $ \\
+        $selecionadas \gets (melhorVariável \cup selecionadas)$ \\
+        $variáveis \gets (variáveis \setminus \{melhor_{variável}\})$ \\
+    }
+    \label{alg:incstepwiseselection}
+\end{algorithm}
+
+\section{Testes e Validação}
+
+\subsection{Conjuntos de dados}
+
+Para teste e validação do algoritmo desenvolvido, utilizou-se três bancos de dados conhecidos na literatura, 
+especificados na tabela \ref{tbl:datasets}.
+\begin{table}[H]
+    \caption{Conjuntos de dados utilizados para validação.}
+    \centering
+    \begin{tabular}{@{}lll@{}}
+    \toprule
+    Nome                           & Variáveis & Amostras \\ \midrule
+    \textit{Forest Fires}          & 12        & 517      \\
+    \textit{USA Housing Dataset}   & 80        & 1460     \\
+    \textit{Wiscoin Breast Cancer} & 32        & 194      \\ \bottomrule
+    \end{tabular}
+    \label{tbl:datasets}
+\end{table}
+
+\subsection{Metodologia de Validação}
+
+Para verificar o funcionamento do algoritmo, variáveis falsas foram geradas e anexadas aos três conjuntos de 
+dados indicados na \ref{tbl:datasets}. As variáveis falsas utilizadas foram amostradas através de distribuições
+aleatórias, descritas na.( #TODO: Criar tabela )

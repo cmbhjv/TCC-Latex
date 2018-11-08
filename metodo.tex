@@ -1,1 +1,70 @@
-\chapter[Materiais e métodos]{Materiais e métodos}
+\chapter[Desenvolvimento]{Desenvolvimento}
+
+\section{Algoritmo}
+
+\subsection{Seleção de Variáveis \textit{Stepwise}}
+
+O algoritmo proposto nesse trabalho é baseado no método de seleção de variáveis \textit{stepwise} 
+(\textit{Stepwise Selection}), comumente utilizado em conjunto com modelos de regressão linear. É um método de
+\textit{greedy search}, onde, a cada iteração, a variável que apresentar o melhor ganho de performance é 
+adicionada ao conjunto de entradas. 
+
+O modelo é construido incrementalmente até que não haja mais melhora de performance ao acrescentar alguma das 
+variáveis restantes ou não haja mais variáveis para serem consideradas. O método é descrito em pseudocódigo no 
+algoritmo \ref{alg:stepwiseselection}
+
+\begin{algorithm}
+    \caption{\textit{Forward Stepwise Selection}}
+    \KwIn{$variáveis$: lista contendo as variáveis disponíveis;}
+    \KwIn{$saídas$: lista contendo as saídas do modelo;}
+    \KwOut{$selecionadas$: lista de variáveis relevantes.}
+    \ \\
+    $selecionadas \gets \{\ \}$ \\
+    $melhorErro \gets \infty$ \\
+    \ \\
+    \Repeat{$variáveis == \{\ \}$ ou (critério de parada)}
+    {   
+        $melhorVariável \gets NULL$ \\     
+        \ForEach{elemento $var$ em $variáveis$}{
+            $entradas \gets (var \cup selecionadas)$ \\
+            $M \gets ajuste(entradas,saídas)$ \\
+            $erro \gets avalia(M)$ \\
+            \If{$erro <melhorErro$}{
+                $melhorErro \gets erro$\\
+                $melhorVariável \gets var$ \\     
+            }
+        }
+        $selecionadas \gets (melhorVariável \cup selecionadas)$ \\
+        $variáveis \gets (variáveis \setminus \{melhorVariável\})$ \\
+    }
+    \label{alg:stepwiseselection}
+\end{algorithm}
+
+Esse algoritmo apresenta uma redução expressiva na quantidade de modelos ajustados em relação ao método da 
+seleção do melhor subconjunto ($1+\sfrac{(p^2+p)}{2}$ vs. $2^p$ ), porém não há
+garantia que o subconjunto determinado é a combinação ótima das variáveis. \cite[p. 208]{intro_stat_learn}
+
+A utilização de uma métrica de avaliação que considere simplesmente os dados ajustados não é adequada, 
+uma vez que, nessa situação, o incremento de uma variável no modelo sempre acarretará em uma melhora no erro de 
+treinamento, porém não necessariamente na capacidade de generalização do modelo.
+
+Algumas técnicas tentam determinar o erro de generalização através do ajuste do erro de treinamento, tais como o 
+critério de Informação de Akaike (AIC) ou critério de informação Bayesiano (BIC), porém elas se baseiam no 
+comportamento assintótico, isto é, quando a quantidade de amostras é bastante elevada.
+
+Uma alternativa a essas técnicas é a utilização de validação cruzada, onde o modelo selecionado é aquele que 
+apresenta a melhor performance no conjunto de testes. Dessa maneira, obtém-se diretamente uma estimativa do erro 
+de generalização, além de se assumir menos condições em relação ao modelo e aos dados utilizados. O grande 
+desafio dessa técnica é o custo computacional da validação cruzada que, quando associado ao custo do método de 
+seleção de variáveis \textit{stepwise} pode tornar proibitiva sua implementação.
+
+Em especial, utilização desse método associado ao \textit{leave-one-out cross-validation} resultaria no ajuste 
+de $\sfrac{1}{2}(p^2+p+2)(N-1)$ modelos. Tornando o custo do algoritmo crescente com tanto o número de 
+dimensões, quanto o número de amostras utilizados.
+
+\subsection{Método Incremental}
+
+Para minimizar o problema do custo computacional, o método implementado utiliza o resultado apresentado na eq. 
+\ref{eq:LOOCV_error} para calcular o erro de validação cruzada sem a necessidade de cálcular $N-1$ modelos de 
+regressão linear. Além disso, o cálculo da matriz de aniquilação é realizado de maneira incremental, utilizando
+a matriz calculada na iteração anterior.

@@ -12,13 +12,14 @@ adicionada ao conjunto de entradas.
 O modelo é construido incrementalmente até que não haja mais melhora de performance ao acrescentar alguma das 
 variáveis restantes ou não haja mais variáveis para serem consideradas. O método é descrito em pseudocódigo no 
 algoritmo \ref{alg:stepwiseselection}
+\\
 
-\begin{algorithm}
-    \caption{\textit{Forward Stepwise Selection}}
+
+\begin{algorithm}[H]
+    \caption{\textit{Forward Stepwise Selection} (FSS)}
     \KwIn{$variáveis$: lista contendo as variáveis disponíveis;}
     \KwIn{$saídas$: lista contendo as saídas do modelo;}
     \KwOut{$selecionadas$: lista de variáveis relevantes.}
-    \ \\
     $selecionadas \gets \{\ \}$ \\
     $melhorErro \gets \infty$ \\
     \Repeat{$variáveis == \{\ \}$ ou (critério de parada)}
@@ -39,9 +40,21 @@ algoritmo \ref{alg:stepwiseselection}
     \label{alg:stepwiseselection}
 \end{algorithm}
 
+\qquad
+
 Esse algoritmo apresenta uma redução expressiva na quantidade de modelos ajustados em relação ao método da 
-seleção do melhor subconjunto ($1+\sfrac{(p^2+p)}{2}$ vs. $2^p$ ), porém não há
-garantia que o subconjunto determinado é a combinação ótima das variáveis \cite[p. 208]{intro_stat_learn}.
+seleção do melhor subconjunto, que é um algoritmo de busca exaustiva, onde todas as combinações possíveis das 
+variáveis de entrada são testadas. Na primeira iteração, o modelo nulo deve ser ajustado, em seguida, todas as 
+$p$ varíaveis devem ser avaliadas e, a cada iteração posterior, uma delas é retirada. Portanto o total de 
+modelos ajustados pode ser descrito pela eq. \ref{eq:total_models}
+
+\begin{equation}
+    Ajustes = 1 + \sum^{p-1}_{k = 0} (p-k) = 1 + \dfrac{p (p+1)}{2} =  \dfrac{1}{2} (p^2 + p  + 2)
+    \label{eq:total_models}
+\end{equation}
+
+Porém, ao contrário do método da seleção do melhor subconjunto, não há garantia que o subconjunto determinado é 
+a combinação ótima das variáveis \cite[p. 208]{intro_stat_learn}.
 
 A utilização de uma métrica de avaliação que considere simplesmente os dados ajustados não é adequada, 
 uma vez que, nessa situação, o incremento de uma variável no modelo sempre acarretará em uma melhora no erro de 
@@ -58,7 +71,7 @@ desafio dessa técnica é o custo computacional da validação cruzada que, quan
 seleção de variáveis \textit{stepwise} pode tornar proibitiva sua implementação.
 
 Em especial, a utilização desse método associada ao \textit{leave-one-out cross-validation} resultaria no ajuste 
-de $\sfrac{1}{2}(p^2+p+2)(N-1)$ modelos. Tornando o custo do algoritmo inviável mesmo com o crescimento .
+de $\sfrac{1}{2}(p^2+p+2)(N-1)$ modelos, tornando o algoritmo computacionalmente inviável.
 
 \subsection{Método Incremental}
 
@@ -70,12 +83,14 @@ deduzido na eq. \ref{eq:inc_matrix_iterativa}.
 O algoritmo \ref{alg:stepwiseselection} é então modificado para realizar o cálculo incremental, utilizando 
 LOOCV como métrica para seleção dos das variáveis e atualização incremental do modelo.
 
+\qquad
+
 \begin{algorithm}[H]
     \caption{\textit{Forward Stepwise Incremental Selection}}
     \KwIn{$variáveis$: lista contendo as variáveis disponíveis;}
     \KwIn{$saídas$: lista contendo as saídas do modelo;}
     \KwOut{$selecionadas$: lista de variáveis relevantes.}
-    \ \\
+    
     $selecionadas \gets \{\ \}$ \\
     $melhorErro \gets \infty$ \\
     $M \gets I_N$ \\
@@ -99,6 +114,8 @@ LOOCV como métrica para seleção dos das variáveis e atualização incrementa
     \label{alg:incstepwiseselection}
 \end{algorithm}
 
+
+
 \section{Testes e Validação}
 
 \subsection{Conjuntos de dados}
@@ -118,8 +135,39 @@ especificados na tabela \ref{tbl:datasets}.
     \label{tbl:datasets}
 \end{table}
 
+\subsubsection{Preprocessamento}
+
+De maneira geral, em um conjunto de amostras, as variáveis apresentam diferentes unidades, magnitudes e escalas, 
+isso dificulta a comparação de valores e pode prejudicar o treinamento de modelos. Por isso é comum aplicar uma 
+transformação nos dados, de maneira a torna-los comparáveis entre si (\textit{feature scaling}), além de 
+facilitar a detecção de \textit{outliers}.
+
+Embora o algoritmo utilizado se baseie em regressões lineares que, em sua forma mais simples, são robustas em 
+relação a magnitude das variáveis, a adição do termo de regressão penaliza o crescimento do vetor de parâmetros, 
+tornando o modelo sensivel à diferença de magnitudes entre variáveis.
+
+Nesse trabalho, todas as variáveis foram normalizadas, de maneira a se obter entradas e saídas que apresentam 
+média nula e desvio padrão unitário. Tal transformação é conhecida como \textit{z-score} (eq. \ref{eq:z-score}).
+
+\begin{equation}
+    X_p = \frac{ X_p - \bar{X_p} }{SD(X_p)}
+    \label{eq:z-score}
+\end{equation}
+
+Além disso, uma variável de entrada com valor unitário foi adicionada posteriormente a cada conjunto de dados, 
+permitindo a consideração do termo livre ($w_0$) nos cálculos de maneira transparente.
+
 \subsection{Metodologia de Validação}
 
-Para verificar o funcionamento do algoritmo, variáveis falsas foram geradas e anexadas aos três conjuntos de 
-dados indicados na \ref{tbl:datasets}. As variáveis falsas utilizadas foram amostradas através de distribuições
-aleatórias, descritas na.( \#TODO: Criar tabela )
+Com o intuito de identificar um subconjunto ótimo de variáveis para cada conjunto de dados, o algoritmo 
+desenvolvido foi empregado e o erro de validação cruzada, conforme a eq. \ref{eq:LOOCV_error}, foi registrado 
+ao final de cada iteração. Dessa maneira é possível analisar o efeito da inclusão de uma nova variável na 
+capacidade de generalização do modelo e avaliar até onde é benéfico o aumento de uma nova dimensão.
+
+Além disso, verificou-se a influência do número de amostras e dimensões no modelo. Para isso, o procedimento 
+anterior foi repetido em subconjuntos de menos amostras ($50\%$, $33\%$, $25\%$), selecionadas aleatoriamente 
+múltiplas vezes. O erro inicial médio de cada um desses experimentos foi deslocado para zero, de maneira a 
+permitir a comparação dos resultados em função do aumento do número de dimensões.
+
+\subsection{Estudo de Caso: Vallourec}
+

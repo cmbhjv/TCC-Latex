@@ -87,17 +87,21 @@ Igualando-se a eq. \ref{eq:min_sq_error} a zero e isolando o vetor $W$, obtém-s
 O termo $(X^TX)$ pode se aproximar de uma matriz singular se muitas das variáveis envolvidas forem 
 linearmente dependentes, resultando assim em dificuldades para o cálculo numérico dos valores e possivelmente em 
 um vetor de parâmetros de alta magnitude. Um termo de regularização pode ser adicionado na eq. \ref{eq:sq_error} 
-para minimizar esse problema, garantindo que a nova matriz não é singular, essa técnica ficou conhecida como 
-\textit{Ridge regression}. A dedução da equação normal com termo de regularização é análoga à apresentada e o 
-resulta na eq. \ref{eq:lsnormal_reg}.
+para minimizar esse problema, garantindo que a nova matriz não é singular.
+
+A adição do termo de regularização tem ainda o efeito de limitar a complexidade efetiva do modelo, reduzindo o 
+\textit{overfitting} e possibilitando a utilização de conjuntos de dados menores \cite{bishop_2006}.
+
+Comumente utiliza-se norma-L2 do vetor de parâmetros como termo de regularização, dando origem a \textit{ridge 
+regression}. A dedução da equação normal com termo de regularização é análoga à apresentada e resulta na eq. 
+\ref{eq:lsnormal_reg}.
 
 \begin{equation}\begin{split}
     W &= (\lambda I + X^TX)^{-1}X^TY = A^{-1}X_{[i]}^TY
     \label{eq:lsnormal_reg}
 \end{split}\end{equation}
 
-A adição do termo de regularização tem ainda o efeito de limitar a complexidade efetiva do modelo, reduzindo o 
-\textit{overfitting} e possibilitando a utilização de conjuntos de dados menores \cite{bishop_2006}.
+
 
 \section{Validação Cruzada}
 

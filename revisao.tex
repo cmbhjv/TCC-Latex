@@ -33,13 +33,16 @@ A inclusão de variáveis irrelevantes resulta no aumento da complexidade do mod
 Os modelos de regressão linear constituem uma classe de modelos que utilizam funções lineares com parâmetros ajustáveis. O exemplo mais simples dessa classe é a função que realiza a combinação linear das entradas com os parâmetros ajustados para gerar uma predição (eq. \ref{eq:lin_expandida}).
 
 \begin{equation}
-    \hat{y} = w_0 + w_1x_1+ ... + w_Dx_D = \sum_{i = 0}^{D} w_i\phi(x_i) = \phi(X)W
+    \hat{y} = w_0 + w_1x_1+ ... + w_px_p = \sum_{i = 0}^{p} w_iX = XW
     \label{eq:lin_expandida}
 \end{equation}
 
-Onde $D$ corresponde ao número de dimensões da variável de entrada, $x_0 = 1$ e $\phi(x_i) = x_i$.
+Onde $p$ corresponde ao número de dimensões da variável de entrada e $x_0 = 1$.
 
-Modelos mais complexos e de maior aplicabilidade podem ser obtidos ao se considerar um conjunto fixo de transformações não-lineares ($\phi_n(x)$) ao invés das variáveis originais, ou em conjunto com elas. Esses modelos são lineares em relação as suas variáveis independentes, porém são não-lineares em relação as variáveis de entrada \cite{bishop_2006}.
+Modelos mais complexos e de maior aplicabilidade podem ser obtidos ao se considerar um conjunto fixo de 
+transformações não-lineares ($\phi_n(X)$) ao invés das variáveis originais, ou em conjunto com elas. 
+Esses modelos são lineares em relação as suas variáveis independentes, porém são não-lineares em relação 
+as variáveis de entrada \cite{bishop_2006}.
 
 \subsection{Treinamento de modelos lineares}
 
@@ -61,27 +64,27 @@ O treinamento de modelos lineares consiste em encontrar o vetor de parâmetros $
       E_{sq}(W) {}&= \frac{1}{2} \sum_{n = 1}^{N}\left(y_n-\hat{y}_n\right)^2 \\
       &= \frac{1}{2} (Y-\hat{Y})^T(Y-\hat{Y})\\
       &= \frac{1}{2} \left( Y^TY - 2 \hat{Y}^TY + \hat{Y}^T\hat{Y} \right)\\
-      &= \frac{1}{2} \left( Y^TY - 2 W^T\phi(X)^TY + \sum_{n = 1}^{N}\left(\phi(X_n)W \right)^2 \right)
+      &= \frac{1}{2} \left( Y^TY - 2 W^TX^TY + \sum_{n = 1}^{N}\left(X_nW \right)^2 \right)
     \label{eq:sq_error}  
 \end{split}
 \end{equation}
 
 \begin{equation}\begin{split}
-    \pdv{E_{sq}(W)}{W} &= \frac{1}{2} \left( 0 - 2 \phi(X)^TY + 2\sum_{n = 1}^{N}\left(\phi(X_n)^T\phi(X_n) \right)W  \right) \\
-    &= - \phi(X)^TY + \phi(X)^T\phi(X) W
+    \pdv{E_{sq}(W)}{W} &= \frac{1}{2} \left( 0 - 2 X^TY + 2\sum_{n = 1}^{N}\left(X_n^TX_n \right)W  \right) \\
+    &= - X^TY + X^TX W
     \label{eq:min_sq_error}
 \end{split}\end{equation}
 
 Igualando-se a eq. \ref{eq:min_sq_error} a zero e isolando o vetor $W$, obtém-se a eq. \ref{eq:lsnormal}, conhecida como a equação normal para o problema dos mínimos quadrados.
 
 \begin{equation}\begin{split}
-    \phi(X)^T\phi(X) W &= \phi(X)^TY \\
-    W &= (\phi(X)^T\phi(X))^{-1}\phi(X)^TY \\
-    W &=\phi(X)^+ Y
+    X^TX W &= X^TY \\
+    W &= (X^TX)^{-1}X^TY \\
+    W &=X^+ Y
     \label{eq:lsnormal}
 \end{split}\end{equation}
 
-O termo $(\phi(X)^T\phi(X))$ pode se aproximar de uma matriz singular se muitas das variáveis envolvidas forem 
+O termo $(X^TX)$ pode se aproximar de uma matriz singular se muitas das variáveis envolvidas forem 
 linearmente dependentes, resultando assim em dificuldades para o cálculo numérico dos valores e possivelmente em 
 um vetor de parâmetros de alta magnitude. Um termo de regularização pode ser adicionado na eq. \ref{eq:sq_error} 
 para minimizar esse problema, garantindo que a nova matriz não é singular, essa técnica ficou conhecida como 
@@ -89,7 +92,7 @@ para minimizar esse problema, garantindo que a nova matriz não é singular, ess
 resulta na eq. \ref{eq:lsnormal_reg}.
 
 \begin{equation}\begin{split}
-    W &= (\lambda I + \phi(X)^T\phi(X))^{-1}\phi(X)^TY = A^{-1}\phi(X)_{[i]}^TY
+    W &= (\lambda I + X^TX)^{-1}X^TY = A^{-1}X_{[i]}^TY
     \label{eq:lsnormal_reg}
 \end{split}\end{equation}
 
@@ -137,7 +140,7 @@ amostra $(x_i,y_i)$ e $W_{[i]}$ os parâmetros desse preditor.
 
 Pode-se definir o vetor de parâmetros $W_{[i]}$ conforme a eq. \ref{eq:wi}.
 \begin{equation}
-    W_{[i]} = A_{[i]}^{-1}\phi(X)_{[i]}^TY_{[i]}
+    W_{[i]} = A_{[i]}^{-1}X_{[i]}^TY_{[i]}
     \label{eq:wi}
 \end{equation} 
 
@@ -145,15 +148,15 @@ Pode-se definir o vetor de parâmetros $W_{[i]}$ conforme a eq. \ref{eq:wi}.
 \smallskip\noindent
 \begin{equation}
     \begin{split}
-        A_{[i]} &= \lambda I + \phi(X)_{[i]}^T\phi(X)_{[i]} \\
-                &= \lambda I + \phi(X)^T\phi(X) - x_i^Tx_i \\
+        A_{[i]} &= \lambda I + X_{[i]}^TX_{[i]} \\
+                &= \lambda I + X^TX - x_i^Tx_i \\
                 &= A - x_i^Tx_i    
     \end{split}
     \label{eq:ai_identity}
 \end{equation} 
 
 \begin{equation}
-    \phi(X)_{[i]}^TY_{[i]} = \phi(X)^TY - x_i^Ty_i
+    X_{[i]}^TY_{[i]} = X^TY - x_i^Ty_i
     \label{eq:X_iY_i_identity}
 \end{equation} 
 
@@ -171,7 +174,7 @@ Substituindo as eq. \ref{eq:X_iY_i_identity} e \ref{eq:sherman} na eq. \ref{eq:w
 \smallskip\noindent
 \begin{equation}
     \begin{split}
-        W_{[i]} &= \left(A^{-1} + \dfrac{A^{-1}x_i^Tx_iA^{-1}}{1-h_i}\right) \left(\phi(X)^TY - x_i^Ty_i\right)\\
+        W_{[i]} &= \left(A^{-1} + \dfrac{A^{-1}x_i^Tx_iA^{-1}}{1-h_i}\right) \left(X^TY - x_i^Ty_i\right)\\
                 &= W - A^{-1}x_i^Ty_i + \dfrac{A^{-1}x_i^Tx_iW}{1-h_i} - \dfrac{A^{-1}x_i^Tx_iA^{-1}x_i^Ty_i}{1-h_i} \\
                 &= W - \dfrac{A^{-1}x_i^T}{1-h_i}\left(  y_i(1-h_i)-x_iW  + h_iy_i \right)  \\
                 &= W - \dfrac{A^{-1}x_i^T}{1-h_i}\left(  y_i-\hat{y}_i \right)  \\

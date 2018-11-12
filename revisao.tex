@@ -2,32 +2,6 @@
 
 Nesta seção são abordados conceitos fundamentais para a compreensão deste trabalho, assim como tendências atuais da literatura em relação ao tema estudado.
 
-\section{O problema da dimensionalidade}
-
-Sistemas que se utilizam de aprendizado de máquina apresentam respostas baseados nos dados de entrada que lhe são apresentados. Dessa maneira, a determinação de que variáveis são relevantes para o sistema é uma etapa fundamental de seu processo de desenvolvimento.
-
-A inclusão de variáveis irrelevantes resulta no aumento da complexidade do modelo, o tornando mais suscetível ao \textit{overfitting} e menos interpretável \cite[p. 204]{intro_stat_learn}. Além disso, um número elevado de variáveis de entrada resulta em um efeito conhecido como a maldição da dimensionalidade (\textit{curse of dimensionality}), onde o aumento do número de dimensões (quantidade de variáveis), implica no aumento exponencial do número de amostras necessárias para representar o espaço de variáveis \cite[p. 34]{bishop_2006}.
-
-\begin{figure}[H]
-    \centering
-    \caption{Crescimento do espaço de variáveis em virtude do aumento das dimensões.}
-    \includegraphics[width=0.8\textwidth]{imgs/rev/dimensionalty_grown.png}
-    \legend{Fonte: The Curse of Dimensionality \cite{dim_grown}}
-    \label{fig:dim_grown}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \caption{Performance em relação ao número de dimenções e amostras.}
-    \includegraphics[width=0.5\textwidth]{imgs/rev/dim_performance}
-    \legend{Fonte: A Problem of Dimensionality: A Simple Example \cite{art:prob_dim}}
-    \label{fig:dim_perf}
-\end{figure}
-
-
-É desejável então que se utilize o menor número possível de variáveis de entrada que permitam ao modelo produzir a resposta correta. Uma maneira de realizar essa redução de dimensionalidade é selecionar um subconjunto das variáveis disponíveis, descartando aquelas que apresentarem pouca ou nenhuma relevância para o problema \cite[p. 204]{intro_stat_learn}.
-
-
 \section{Regressão Linear}
 
 Os modelos de regressão linear constituem uma classe de modelos que utilizam funções lineares com parâmetros ajustáveis. O exemplo mais simples dessa classe é a função que realiza a combinação linear das entradas com os parâmetros ajustados para gerar uma predição (eq. \ref{eq:lin_expandida}).

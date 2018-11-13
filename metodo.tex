@@ -93,16 +93,16 @@ O algoritmo \ref{alg:stepwiseselection} é então modificado para realizar o cá
     \label{alg:incstepwiseselection}
 \end{algorithm}
 
-
+O código em R que implementa o algoritmo proposto se encontra no Apêndice \ref{appendix:code} desse trabalho.
 
 \section{Testes}
 
 \subsection{Conjuntos de dados}
 
-Para teste e validação do algoritmo desenvolvido, utilizou-se três bancos de dados conhecidos na literatura, 
+Para teste do algoritmo desenvolvido, utilizou-se três bancos de dados conhecidos na literatura, 
 especificados na tabela \ref{tbl:datasets}.
 \begin{table}[H]
-    \caption{Conjuntos de dados utilizados para validação.}
+    \caption{Conjuntos de dados utilizados para teste.}
     \centering
     \begin{tabular}{@{}lll@{}}
     \toprule
@@ -117,10 +117,7 @@ especificados na tabela \ref{tbl:datasets}.
 
 \subsubsection{Preprocessamento}
 
-De maneira geral, em um conjunto de amostras, as variáveis apresentam diferentes unidades, magnitudes e escalas, 
-isso dificulta a comparação de valores e pode prejudicar o treinamento de modelos. Por isso é comum aplicar uma 
-transformação nos dados, de maneira a torna-los comparáveis entre si (\textit{feature scaling}), além de 
-facilitar a detecção de \textit{outliers}.
+De maneira geral, em um conjunto de amostras, as variáveis apresentam diferentes unidades, magnitudes e escalas, isso dificulta a comparação de valores e pode prejudicar o treinamento de modelos. Por isso é comum aplicar uma transformação nos dados, de maneira a torna-los comparáveis entre si (\textit{feature scaling}), além de facilitar a detecção de \textit{outliers}.
 
 Embora o algoritmo utilizado se baseie em regressões lineares que, em sua forma mais simples, são robustas em  relação a magnitude das variáveis, a adição do termo de regressão penaliza o crescimento do vetor de parâmetros, tornando o modelo sensivel à diferença de magnitudes entre variáveis.
 
@@ -170,9 +167,14 @@ Diversas características que podem influenciar no resultado do teste foram leva
 
 \subsection{Descrição do Conjunto de dados}
 
-Utilizando-se o conhecimento a priori do processo, uma filtragem inicial dos dados foi realizada, removendo caracteristicas irrelevantes para o processo de modelagem, tais como identificações, lotes e datas. Variáveis que não apresentam nenhuma variação no conjunto de dados também foram removidas. Além disso, por motivos de confidencialidade, o nome das variáveis foram anonimizados. Por fim, os dados passaram pelo processo de normalização descrito anteriormente.
+Utilizando-se o conhecimento prévio do processo, uma filtragem inicial dos dados foi realizada, removendo caracteristicas irrelevantes para o processo de modelagem, tais como identificações, lotes e datas. Variáveis que não apresentam nenhuma variação no conjunto de dados também foram removidas. Além disso, por motivos de confidencialidade, o nome das variáveis foram anonimizados. Por fim, os dados passaram pelo processo de normalização descrito anteriormente.
 
 Após o processamento inicial, o conjunto de dados possui 1064 amostras, com 30 possíveis variáveis de entrada e 3 varíaveis de saída.
 
 \subsection{Metodologia}
 
+O objetivo principal nesse estudo é identificar qual o melhor subconjunto de variáveis para descrever o problema. Por isso, o algoritmo proposto foi executado nesse banco de dados e a curva de performance dos subconjuntos levantada. 
+
+Quatro modelos foram treinados, sendo dois utilizando o conjunto total de variáveis e dois utilizando o melhor subconjunto sugerido pelo método de seleção. Antecipa-se uma melhora de desempenho ao utilizar um conjunto reduzido de variáveis.
+
+De maneira auxiliar, a correlação linear entre variáveis e a correlação entre saídas e variáveis foi levantada, de maneira a observar se através dessas medidas é possível identificar uma relação com o subconjunto proposto.

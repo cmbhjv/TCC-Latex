@@ -5,7 +5,8 @@ incrementM =  function(Mprev, Fnew,lambda){
   aux = Mprev %*% Fnew
   scale = as.numeric(lambda + crossprod(Fnew,aux))
   adjust = (aux%*% crossprod(Fnew,Mprev))/scale
-  Mnew = Mprev - adjust  
+  Mnew = Mprev - adjust
+  
   return(Mnew)
 }
 
@@ -13,7 +14,8 @@ incrementM =  function(Mprev, Fnew,lambda){
 looMSE = function(M,y){
   N = nrow(M)
   aux = diag(N)*(diag(M)^-2) # mais rápido que diag(diag(M)^-2))
-  mse = 1/N * crossprod(y,M) %*% aux %*% M %*% y  
+  mse = 1/N * crossprod(y,M) %*% aux %*% M %*% y
+  
   return(as.numeric(mse))
 }
 
@@ -21,7 +23,8 @@ looMSE = function(M,y){
 #Detemrina o melhor subconjunto.
 #Testa todas as variáveis ou até subconjuntos de $lim$ elementos.
 #Pode assumir uma matriz de aniquilação M inicial.
-rankFeatures = function(X,Y, lim = -1, M = NULL,lambda = 0){  
+rankFeatures = function(X,Y, lim = -1, M = NULL,lambda = 0){
+  
   #Conversão das variáveis
   ##################################
   if(!is.matrix(X))
@@ -33,19 +36,27 @@ rankFeatures = function(X,Y, lim = -1, M = NULL,lambda = 0){
   if(lim == -1 || lim > ncol(X))
     lim = ncol(X)
   ##################################
+
   N = nrow(X)
   if(!is.matrix(M))
-    M = diag(nrow = N, ncol=N)  
+    M = diag(nrow = N, ncol=N)
+  
   selected_features = c()
   candidates = colnames(X)
-  i = 0  
+  
+  i = 0
+  
   while(length(candidates) && i<lim)
-  {    
-    best = list(name="",error=Inf,M=NULL)    
+  {
+    
+    best = list(name="",error=Inf,M=NULL)
+    
     for(feat in candidates){
-      Mcand = incrementR(M,X[,feat],lambda)
-      error = looMSE(Mcand,Y)      
-      improvement = error<best$error      
+      Mcand = incrementM(M,X[,feat],lambda)
+      error = looMSE(Mcand,Y)
+      
+      improvement = error<best$error
+      
       if(is.na(improvement)){
         print("Degeneration")
         return(-1)
@@ -54,10 +65,12 @@ rankFeatures = function(X,Y, lim = -1, M = NULL,lambda = 0){
         best$error = error
         best$M = Mcand
       }
-    }    
+    }
+    
     i = i+1
     selected_features[best$name] = best$error
-    M = best$M    
+    M = best$M
+    
     candidates = candidates[candidates != best$name]
   }
   return(selected_features)

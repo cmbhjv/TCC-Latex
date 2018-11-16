@@ -9,14 +9,14 @@ Hoje, aplicações tais como pesquisas web, sistemas \textit{anti-spam}, reconhe
 
 Aprendizado de máquina é o campo da computação responsável por desenvolver e empregar sistemas ou modelos que, através da sua exposição à experiências, são capazes de melhorar sua performance na realização de determinada tarefa \cite{mitchell_1997}.
 
-O processo de desenvolvimento de modelos com aprendizado de máquina pode ser dividido, em linhas gerais, em duas grandes etapas. A primeira delas refere-se à análise e tratamento dos dados. Nessa etapa procura-se identificar correlações entre as informações disponíveis e as variáveis de interesse. Além disso, são explorados possíveis filtros, transformações e outros algoritmos que possam facilitar o aprendizado do modelo. Também é necessário realizar nessa etapa a separação dos dos dados que serão utilizados para treinamento, validação e teste no decorrer do processo.
+O processo de desenvolvimento de modelos com aprendizado de máquina pode ser dividido, em linhas gerais, em duas grandes etapas. A primeira delas refere-se à análise e tratamento dos dados. Nessa etapa procura-se identificar correlações entre as informações disponíveis e as variáveis de interesse. Além disso, são explorados possíveis filtros, transformações e outros algoritmos que possam facilitar o aprendizado do modelo. Também é necessário realizar nessa etapa a separação dos dados que serão utilizados para treinamento, validação e teste no decorrer do processo.
 
 \begin{figure}[!htb]
     \caption{Fluxo geral de desenvolvimento de sistemas de aprendizado de máquina.}
     \begin{center}
     \includegraphics[width=\linewidth]{imgs/intro/MLFlow}
     \end{center}
-    \legend{Fonte: \textit{Machine Learning: A Gentle Introduction. \cite{mlflow}}}
+    \legend{Fonte: \textit{Machine Learning: A Gentle Introduction \cite{mlflow}}. Adaptado.}
     \label{fig:mlflow}
 \end{figure}
 
@@ -43,7 +43,7 @@ De maneira similar, o \textit{underfitting},ou sub-ajuste, é caracterizado pela
     \begin{center}
     \includegraphics[width=\linewidth]{imgs/intro/over_underfitting}
     \end{center}
-    \legend{Fonte: \textit{Bias and Variance} \cite{bias_var}}
+    \legend{Fonte: \textit{Bias and Variance} \cite{bias_var}. Adaptado.}
     \label{fig:over_underfitting}
 \end{figure}
 
@@ -51,7 +51,7 @@ Generalização é o termo usado para descrever a capacidade de um sistema de re
 
 Analogamente, pode-se avaliar o modelo em termos de complexidade, onde modelos mais complexos são capazes de ajustar os dados em uma família maior de curvas, porém estão mais sujeitos a \textit{overfitting} e exigem, em geral uma complexidade amostral (\textit{sample complexity}) maior.
 
-Pode-se ainda avaliar o sistema em termos de viés e variância (\textit{bias-variance tradeoff}), onde o viés representa a parcela do erro atribuida à diferença entre o modelo e a função real do sistema, e a variância a parcela devido à sensibilidade do modelo à pequenas variações nos dados.
+Pode-se ainda avaliar o sistema em termos de viés e variância (\textit{bias-variance tradeoff}), onde o viés representa a parcela do erro atribuída à diferença entre o modelo e a função real do sistema, e a variância a parcela devido à sensibilidade do modelo à pequenas variações nos dados.
 
 \section{O problema da dimensionalidade}
 
@@ -69,7 +69,7 @@ A inclusão de variáveis irrelevantes resulta no aumento da complexidade do mod
 \end{figure}
 
 \begin{figure}[!htb]
-    \caption{Performance em relação ao número de dimenções e amostras.}
+    \caption{Performance em relação ao número de dimensões e amostras.}
     \begin{center}  
     \includegraphics[width=0.5\textwidth]{imgs/rev/dim_performance}
     \end{center}
@@ -81,7 +81,7 @@ A inclusão de variáveis irrelevantes resulta no aumento da complexidade do mod
 
 
 \section{Motivação}
-A quantidade e qualidade das variáveis incluidas em um modelo é responsável por parcela significativa de sua complexidade e potencial de generalização. Para o desenvolvimento de um modelo satisfatório, é necessário, portanto, a aplicação de procedimentos adequados para a seleção e processamento dos dados iniciais.
+A quantidade e qualidade das variáveis incluídas em um modelo é responsável por parcela significativa de sua complexidade e potencial de generalização. Para o desenvolvimento de um modelo satisfatório, é necessário, portanto, a aplicação de procedimentos adequados para a seleção e processamento dos dados iniciais.
 
 Esse trabalho apresenta um método de seleção automática de variáveis de entrada para modelos treinados através de aprendizado supervisionado.
 

@@ -100,11 +100,15 @@ history_trim <- model_trim %>% fit(
 
 
 ########## Plota o resultado dos treinamentos ################
-error_trim_v = data.frame(CVerror = history_trim$metrics$val_mean_squared_error,it = seq(1:epochs), type = "Selecionado - Validação")
-error_trim_t = data.frame(CVerror = history_trim$metrics$mean_squared_error,it = seq(1:epochs), type = "Selecionado - Treinamento")
+error_trim_v = data.frame(CVerror = history_trim$metrics$val_mean_squared_error,
+			  it = seq(1:epochs), type = "Selecionado - Validação")
+error_trim_t = data.frame(CVerror = history_trim$metrics$mean_squared_error,
+			  it = seq(1:epochs), type = "Selecionado - Treinamento")
 
-error_full_v = data.frame(CVerror = history$metrics$val_mean_squared_error,it = seq(1:epochs), type = "Completo - Validação")
-error_full_t = data.frame(CVerror = history$metrics$mean_squared_error,it = seq(1:epochs), type = "Completo - Treinamento")
+error_full_v = data.frame(CVerror = history$metrics$val_mean_squared_error,
+			  it = seq(1:epochs), type = "Completo - Validação")
+error_full_t = data.frame(CVerror = history$metrics$mean_squared_error,
+			  it = seq(1:epochs), type = "Completo - Treinamento")
 
 error_data = rbind(error_full_t,error_trim_t, error_full_v,error_trim_v)
 error_data$CVerror = sqrt(error_data$CVerror)
@@ -114,6 +118,7 @@ g = g + geom_line()+geom_point()+
   xlab("Iteração")+
   ylab("Raiz do erro quadrático médio (RMSE)")+
   scale_color_discrete(name = "Conjunto de dados:")+
-  labs(title=dtitle, subtitle = paste("MLP de camada única - Treinamento",Nneurons,"neurons."))
+  labs(title=dtitle, subtitle = paste("MLP de camada única - Treinamento",
+					Nneurons,"neurons."))
 g
 ##############################################################

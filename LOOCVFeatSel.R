@@ -4,9 +4,8 @@ library(MASS) #para calculo do nr. efetivo de parâmetros
 incrementM =  function(Mprev, Fnew,lambda){
   aux = Mprev %*% Fnew
   scale = as.numeric(lambda + crossprod(Fnew,aux))
-  adjust = (aux%*% crossprod(Fnew,Mprev))/scale
+  adjust = (tcrossprod(aux,aux))/scale
   Mnew = Mprev - adjust
-  
   return(Mnew)
 }
 
@@ -14,8 +13,8 @@ incrementM =  function(Mprev, Fnew,lambda){
 looMSE = function(M,y){
   N = nrow(M)
   aux = diag(N)*(diag(M)^-2) # mais rápido que diag(diag(M)^-2))
-  mse = 1/N * crossprod(y,M) %*% aux %*% M %*% y
-  
+  my = M %*% y
+  mse = 1/N * crossprod(my,aux) %*% my #M^t == M
   return(as.numeric(mse))
 }
 
@@ -23,16 +22,15 @@ looMSE = function(M,y){
 #Detemrina o melhor subconjunto.
 #Testa todas as variáveis ou até subconjuntos de $lim$ elementos.
 #Pode assumir uma matriz de aniquilação M inicial.
+#Aceita o parâmetro de regularização l2 lambda.
 rankFeatures = function(X,Y, lim = -1, M = NULL,lambda = 0){
   
   #Conversão das variáveis
   ##################################
   if(!is.matrix(X))
     X = as.matrix(X)
-
   if(!is.vector(Y))
     Y = as.vector(as.matrix(Y))
-  
   if(lim == -1 || lim > ncol(X))
     lim = ncol(X)
   ##################################
@@ -40,10 +38,8 @@ rankFeatures = function(X,Y, lim = -1, M = NULL,lambda = 0){
   N = nrow(X)
   if(!is.matrix(M))
     M = diag(nrow = N, ncol=N)
-  
   selected_features = c()
   candidates = colnames(X)
-  
   i = 0
   
   while(length(candidates) && i<lim)
@@ -54,9 +50,7 @@ rankFeatures = function(X,Y, lim = -1, M = NULL,lambda = 0){
     for(feat in candidates){
       Mcand = incrementM(M,X[,feat],lambda)
       error = looMSE(Mcand,Y)
-      
       improvement = error<best$error
-      
       if(is.na(improvement)){
         print("Degeneration")
         return(-1)
@@ -66,11 +60,9 @@ rankFeatures = function(X,Y, lim = -1, M = NULL,lambda = 0){
         best$M = Mcand
       }
     }
-    
     i = i+1
     selected_features[best$name] = best$error
     M = best$M
-    
     candidates = candidates[candidates != best$name]
   }
   return(selected_features)

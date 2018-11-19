@@ -1,7 +1,7 @@
 \documentclass[
 	% -- opções da classe memoir --
 	12pt,				% tamanho da fonte
-	%openright,			% capítulos começam em pág ímpar (insere página vazia caso preciso)
+	openright,			% capítulos começam em pág ímpar (insere página vazia caso preciso)
 	twoside,			% para impressão em recto e verso. Oposto a oneside
 	%oneside,
 	a4paper,			% tamanho do papel. 
@@ -74,6 +74,7 @@
 \usepackage{subcaption}
 \usepackage{xfrac}
 \usepackage[export]{adjustbox}
+\usepackage{placeins}
 \newcommand{\bigO}[1]{\mathcal{O}\left(#1\right)} 
 
 \pdfimageresolution=300
@@ -232,22 +233,10 @@ Máquina utilizando Preditor Linear e Validação Cruzada}
 % Agradecimentos
 % ---
 \begin{agradecimentos}
-Os agradecimentos principais são direcionados à Gerald Weber, Miguel Frasson,
-Leslie H. Watter, Bruno Parente Lima, Flávio de Vasconcellos Corrêa, Otavio Real
-Salvador, Renato Machnievscz\footnote{Os nomes dos integrantes do primeiro
-projeto abn\TeX\ foram extraídos de
-\url{http://codigolivre.org.br/projects/abntex/}} e todos aqueles que
-contribuíram para que a produção de trabalhos acadêmicos conforme
-as normas ABNT com \LaTeX\ fosse possível.
 
-Agradecimentos especiais são direcionados ao Centro de Pesquisa em Arquitetura
-da Informação\footnote{\url{http://www.cpai.unb.br/}} da Universidade de
-Brasília (CPAI), ao grupo de usuários
-\emph{latex-br}\footnote{\url{http://groups.google.com/group/latex-br}} e aos
-novos voluntários do grupo
-\emph{\abnTeX}\footnote{\url{http://groups.google.com/group/abntex2} e
-\url{http://www.abntex.net.br/}}~que contribuíram e que ainda
-contribuirão para a evolução do \abnTeX.
+	Agradeço aos meus pais, Libério e Rosângela, que não mediram esforços para me proporcionar a melhor educação possível e sempre incentivaram o pensamento curioso, o estudo e a dedicação que me permitiram completar essa etapa da minha jornada acadêmica. Agradeço também aos meus amigos, muitos dos quais conheci no decorrer do curso, e que foram porto seguro nos momentos de desânimo e frustração.
+
+	Agradeço aos mestres do curso de Engenharia Elétrica que, ao compartilhar seus conhecimentos em sala de aula, ensiraram e inspiraram. Em especial, agradeço ao Professor Antônio de Pádua Braga, com quem pude aprender e trabalhar, ainda que brevemente, no projeto que possibilitou a escrita desse trabalho.
 
 \end{agradecimentos}
 % ---
@@ -278,8 +267,11 @@ contribuirão para a evolução do \abnTeX.
 % resumo em português
 \setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do resumo
 \begin{resumo}
-\lipsum[1]
- \textbf{Palavras-chave}: latex. abntex. editoração de texto.
+	Neste trabalho foi apresentado um método de seleção de variáveis \textit{stepwise} utilizando o erro de validação cruzada \textit{leave-one-out} (LOOCV) em regressores lineares como métrica de performance. 
+	
+	O algoritmo proposto faz uso de identidades algébricas conhecidas na literatura para determinar de maneira incremental, o erro de LOOCV ao se acrescentar uma variável no conjunto de entradas. Dessa maneira elimina-se a necessidade do ajuste de novos modelos lineares a cada subconjunto de variáveis avaliado.
+
+ \textbf{Palavras-chave}: seleção de variáveis, features, machine learning, \textit{feature selection}, \textit{feature engineering}.
 \end{resumo}
 
 % % resumo em inglês

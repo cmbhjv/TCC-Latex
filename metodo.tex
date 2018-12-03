@@ -7,11 +7,11 @@
 O algoritmo proposto nesse trabalho é baseado no método de seleção de variáveis \textit{stepwise} 
 (\textit{Stepwise Selection}), comumente utilizado em conjunto com modelos de regressão linear. É um método de \textit{greedy search}, onde, a cada iteração, a variável que apresentar o melhor ganho de performance é adicionada ao conjunto de entradas. 
 
-O modelo é construído incrementalmente até que não haja mais melhora de performance ao acrescentar alguma das variáveis restantes ou não haja mais variáveis para serem consideradas. O método é descrito em pseudocódigo no algoritmo \ref{alg:stepwiseselection}.
+O modelo é construído incrementalmente até que não haja mais melhora de performance ao acrescentar alguma das variáveis restantes ou não haja mais variáveis para serem consideradas. O método é descrito em pseudocódigo no Algoritmo \ref{alg:stepwiseselection}.
 
 \qquad
 
-\begin{algorithm}[H]
+\begin{algorithm}[!htb]
     \caption{\textit{Forward Stepwise Selection} (FSS)}
     \KwIn{$variáveis$: lista contendo as variáveis disponíveis;}
     \KwIn{$saídas$: lista contendo as saídas do modelo;}
@@ -38,7 +38,7 @@ O modelo é construído incrementalmente até que não haja mais melhora de perf
 
 \qquad
 
-Esse algoritmo apresenta uma redução expressiva na quantidade de modelos ajustados em relação ao método da seleção do melhor subconjunto, que é um algoritmo de busca exaustiva, onde todas as combinações possíveis das variáveis de entrada são testadas. Na primeira iteração, o modelo nulo deve ser ajustado, em seguida, todas as $p$ variáveis devem ser avaliadas e, a cada iteração posterior, uma delas é retirada.
+No método da seleção do melhor subconjunto, que é um algoritmo de busca exaustiva, todas as combinações possíveis das variáveis de entrada são testadas. No algoritmo \textit{Stepwise} porém, há uma redução expressiva na quantidade de modelos ajustados. Na primeira iteração, o modelo nulo deve ser ajustado, em seguida, todas as $p$ variáveis devem ser avaliadas e, a cada iteração posterior, uma delas é retirada.
 
 Porém, ao contrário do método da seleção do melhor subconjunto, não há garantia que o subconjunto determinado é a combinação ótima das variáveis \cite[p. 208]{intro_stat_learn}.
 
@@ -49,19 +49,18 @@ Algumas técnicas tentam determinar a capacidade de generalização através de 
 
 Uma alternativa a essas métricas é a utilização de validação cruzada, onde o modelo selecionado é aquele que apresenta a melhor performance no conjunto de testes. Dessa maneira, obtém-se diretamente uma estimativa do erro de generalização, além de se assumir menos condições em relação ao modelo e aos dados utilizados. 
 
-O grande empecilho à implementação de validação cruzada é seu custo computacional que, quando associado ao custo do método de seleção de variáveis \textit{stepwise} pode tornar proibitiva sua implementação.
+O grande empecilho à implementação de validação cruzada é seu custo computacional que, quando associado ao custo do método de seleção de variáveis \textit{stepwise}, pode tornar proibitiva sua implementação.
 
 Em especial, a utilização desse método associada ao \textit{leave-one-out cross-validation} resultaria no ajuste de um número significativamente elevado de modelos, tornando o algoritmo computacionalmente inviável.
+\FloatBarrier
 
 \subsection{Método Incremental}
 
 Para minimizar o problema do custo computacional, o método implementado utiliza o resultado apresentado na eq. \ref{eq:LOOCV_error} para calcular o erro de validação cruzada sem a necessidade de calcular $N-1$ modelos de regressão linear. Além disso, o cálculo da matriz de aniquilação é realizado de maneira incremental, conforme deduzido na eq. \ref{eq:inc_matrix_iterativa}.
 
-O algoritmo \ref{alg:stepwiseselection} é então modificado para realizar o cálculo incremental, utilizando LOOCV como métrica para seleção dos das variáveis e atualização incremental do modelo.
+O Algoritmo \ref{alg:stepwiseselection} é então modificado no Algoritmo \ref{alg:incstepwiseselection} para realizar o cálculo incremental, utilizando LOOCV como métrica para seleção dos das variáveis e atualização incremental do modelo.
 
-\qquad
-
-\begin{algorithm}[H]
+\begin{algorithm}[!htb]
     \caption{\textit{Forward Stepwise Incremental Selection}}
     \KwIn{$variáveis$: lista contendo as variáveis disponíveis;}
     \KwIn{$saídas$: lista contendo as saídas do modelo;}
@@ -92,6 +91,7 @@ O algoritmo \ref{alg:stepwiseselection} é então modificado para realizar o cá
 
 O código em R que implementa o algoritmo proposto se encontra no Apêndice \ref{appendix:step_wise_code} desse trabalho.
 
+\FloatBarrier
 \subsection{Complexidade algorítmica}
 
 A implementação não incremental do método \textit{stepwise} resulta no ajuste de uma curva para cada conjunto de variáveis considerado. Como apenas uma variável é acrescentada a cada etapa, o total de modelos ajustados pode então ser derivado como na eq. \ref{eq:naive_stepwise}.
@@ -115,7 +115,7 @@ Sendo assim, a complexidade da implementação não incremental do método \text
     \label{eq:naive_stepwise_loocv}
 \end{equation}
 
-O método proposto nesse trabalho não realiza o ajuste direto do modelo, mas sim o cálculo de maneira incremental da matriz de aniquilação, dessa forma, além de não ser necessário o cálculo da inversão da matriz $A$ na eq. \ref{eq:lsnormal_reg}, o cálculo do erro de validação cruzada \textit{leave-one-out} pode ser calculado diretamente, sem a necessidade de $N-1$ passos. Dessa maneira o custo computacional é reduzido para o exposto na eq. \ref{eq:inc_stepwise_loocv}.
+O método proposto neste trabalho não realiza o ajuste direto do modelo, mas sim o cálculo de maneira incremental da matriz de aniquilação. Dessa forma, além de não ser necessário o cálculo da inversão da matriz $A$ na eq. \ref{eq:lsnormal_reg}, o cálculo do erro de validação cruzada \textit{leave-one-out} pode ser calculado diretamente, sem a necessidade de $N-1$ passos. Dessa maneira o custo computacional é reduzido para o exposto na eq. \ref{eq:inc_stepwise_loocv}.
 \begin{equation}
     \begin{split}
         O(Stepwise_{LOOCV}^{INC}) &= \frac{1}{2}(p^2+p+2)\left( \bigO{3 N^2}\right)\\
@@ -147,11 +147,11 @@ especificados na tabela \ref{tbl:datasets}.
 
 \subsubsection{Pré-processamento}
 
-De maneira geral, em um conjunto de amostras, as variáveis apresentam diferentes unidades, magnitudes e escalas, isso dificulta a comparação de valores e pode prejudicar o treinamento de modelos. Por isso é comum aplicar uma transformação nos dados, de maneira a torna-los comparáveis entre si (\textit{feature scaling}), além de facilitar a detecção de \textit{outliers}.
+De maneira geral, em um conjunto de amostras, as variáveis apresentam diferentes unidades, magnitudes e escalas. Tal variação dificulta a comparação de valores e pode prejudicar o treinamento de modelos. Por isso é comum aplicar uma transformação nos dados, de maneira a torná-los comparáveis entre si (\textit{feature scaling}), além de facilitar a detecção de \textit{outliers}.
 
 Embora o algoritmo utilizado se baseie em regressões lineares que, em sua forma mais simples, são robustas em  relação a magnitude das variáveis, a adição do termo de regressão penaliza o crescimento do vetor de parâmetros, tornando o modelo sensível à diferença de magnitudes entre variáveis.
 
-Nesse trabalho, todas as variáveis foram normalizadas, de maneira a se obter entradas e saídas que apresentam média nula e desvio padrão unitário. Tal transformação é conhecida como \textit{z-score} (eq. \ref{eq:z-score}).
+Neste trabalho, todas as variáveis foram normalizadas, de maneira a se obter entradas e saídas que apresentam média nula e desvio padrão unitário. Tal transformação é conhecida como \textit{z-score} (eq. \ref{eq:z-score}).
 
 \begin{equation}
     X_p = \frac{ X_p - \bar{X_p} }{SD(X_p)}
@@ -163,13 +163,13 @@ Além disso, uma variável de entrada com valor unitário foi adicionada posteri
 \subsection{Metodologia de Teste}
 
 Com o intuito de identificar um subconjunto ótimo de variáveis para cada conjunto de dados, o algoritmo 
-desenvolvido foi empregado e o erro de validação cruzada, conforme a eq. \ref{eq:LOOCV_error}, foi registrado ao final de cada iteração. Dessa maneira é possível analisar o efeito da inclusão de uma nova variável na capacidade de generalização do modelo e avaliar até onde é benéfico o aumento de uma nova dimensão.
+desenvolvido foi empregado e o erro de validação cruzada, conforme a eq. \ref{eq:LOOCV_error}, foi registrado ao final de cada iteração. Dessa maneira, é possível analisar o efeito da inclusão de uma nova variável na capacidade de generalização do modelo e avaliar o quão benéfico é o aumento de uma nova dimensão.
 
 Em seguida, para cada conjunto de dados, dois modelos são treinados com parâmetros idênticos, variando-se o conjunto de variáveis. Dessa maneira, é possível estudar quais os efeitos da utilização do subconjunto proposto pelo algoritmo em relação ao conjunto completo de variáveis.
 
 Optou-se pela utilização de um modelo \textit{Perceptron} (MLP) de uma camada oculta (três camadas no total: entradas, camada oculta, saída), devido a disponibilidade implementações disponíveis tanto para o modelo, quanto para o seu treinamento e validação.
 
-Utilizou-se a biblioteca Keras \cite{keras}, com a interface para a linguagem R e a biblioteca Tensorflow \cite{tensorflow}, como \textit{backend}. O código fonte que implementa a rede neural desenvolvida se encontra no Apêndice \ref{appendix:keras_mlp}.
+Utilizou-se a biblioteca Keras \cite{keras} com a interface para a linguagem R e a biblioteca Tensorflow \cite{tensorflow} como \textit{backend}. O código fonte que implementa a rede neural desenvolvida se encontra no Apêndice \ref{appendix:keras_mlp}.
 
 % \section{Estudo de Caso: Vallourec - Caracterização de tubos de aço}
 

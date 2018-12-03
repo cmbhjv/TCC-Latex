@@ -11,12 +11,11 @@ Os modelos de regressão linear constituem uma classe de modelos que utilizam fu
     \label{eq:lin_expandida}
 \end{equation}
 
-Onde $p$ corresponde ao número de dimensões da variável de entrada e $x_0 = 1$.
+Onde, $X$ e $W$ correspondem, respectivamente, ao vetor de entradas e de parâmetros, $p$ corresponde ao número de dimensões da variável de entrada e $x_0 = 1$.
 
 Modelos mais complexos e de maior aplicabilidade podem ser obtidos ao se considerar um conjunto fixo de 
-transformações não-lineares ($\phi_n(X)$) ao invés das variáveis originais, ou em conjunto com elas. 
-Esses modelos são lineares em relação as suas variáveis independentes, porém são não-lineares em relação 
-as variáveis de entrada \cite{bishop_2006}.
+transformações não-lineares ($\phi_n(X)$) em vez das variáveis originais, ou em conjunto com elas. 
+Esses modelos são lineares em relação às suas variáveis independentes, porém são não-lineares em relação às variáveis de entrada \cite{bishop_2006}.
 
 \subsection{Treinamento de modelos lineares}
 
@@ -63,7 +62,7 @@ para minimizar esse problema, garantindo que a nova matriz não é singular.
 
 A adição do termo de regularização tem ainda o efeito de limitar a complexidade efetiva do modelo, reduzindo o \textit{overfitting} e possibilitando a utilização de conjuntos de dados menores \cite{bishop_2006}.
 
-Comumente utiliza-se norma-L2 do vetor de parâmetros como termo de regularização, dando origem a \textit{ridge regression}. A dedução da equação normal com termo de regularização é análoga à apresentada e resulta na eq. \ref{eq:lsnormal_reg}.
+Comumente utiliza-se a norma-L2 do vetor de parâmetros como termo de regularização, dando origem a \textit{ridge regression}. A dedução da equação normal com termo de regularização é análoga à apresentada e resulta na eq. \ref{eq:lsnormal_reg}.
 
 \begin{equation}\begin{split}
     W &= (\lambda I + X^TX)^{-1}X^TY = A^{-1}X^TY
@@ -85,17 +84,11 @@ No método \textit{k-fold} de validação cruzada, os dados de treinamento são 
     \label{fig:dim_perf}
 \end{figure}
 
-Um caso especial do método descrito é o \textit{leave-one-out cross-validation} (LOOCV), onde k é igual ao total de 
-amostras disponíveis (N), ou seja, o treinamento é realizado N vezes com N-1 amostras, e validado na amostra excluída.
- Tal abordagem apesar de apresentar, em geral, um custo computacional elevado, resulta em um modelo com menor 
- variabilidade e viés para modelos de regressão linear \cite{burman}, produzindo assim resultados com melhor 
- performance e menos \textit{overfitting}.
+Um caso especial do método de validação descrito é o \textit{leave-one-out cross-validation} (LOOCV), onde k é igual ao total de amostras disponíveis (N), ou seja, o treinamento é realizado N vezes com N-1 amostras, e validado na amostra excluída. Tal abordagem apesar de apresentar, em geral, um custo computacional elevado, resulta em um modelo com menor variabilidade e viés para modelos de regressão linear \cite{burman}, produzindo assim resultados com melhor performance e menos \textit{overfitting}.
 
 \subsection{ \textit{Leave-one-out Cross-validation} e Regressão Linear}
 
-Especificamente para o caso do preditor linear, é possível determinar o resultado do LOOCV sem a necessidade de se 
-calcular N preditores, tornando essa uma estratégia interessante para determinar a capacidade de generalização de 
-um modelo linear. A seguir uma dedução adaptada de \cite[p. 268]{lin_reg_analysis} é apresentada.
+Especificamente para o caso do preditor linear, é possível determinar o resultado do LOOCV sem a necessidade de se calcular N preditores, tornando essa uma estratégia interessante para determinar a capacidade de generalização de um modelo linear. A seguir uma dedução adaptada de \cite[p. 268]{lin_reg_analysis} é apresentada.
 
 O erro de LOOCV corresponde à média dos erros quadráticos de cada estimador obtido excluindo-se uma amostra. 
 
@@ -202,7 +195,7 @@ Assim, a equação \ref{eq:e_cv}, juntamente com o conhecimento que $M$ é uma m
 
 \section{Aprendizado Incremental}
 
-A atualização dos parâmetros do modelo de regressão linear para uma nova amostra pode ser realizada de maneira incremental, sem a necessidade de se calcular um novo modelo \cite{mit_onlinereg}. Nesse trabalho, porém, é de interesse calcular a atualização incremental ao se adicionar uma nova variável. Em especial, é de interesse a determinação de uma forma fechada para a matriz de aniquilação, usada no cálculo do erro de validação cruzada.
+A atualização dos parâmetros do modelo de regressão linear para uma nova amostra pode ser realizada de maneira incremental, sem a necessidade de se calcular um novo modelo \cite{mit_onlinereg}. Neste trabalho, porém, é de interesse calcular a atualização incremental ao se adicionar uma nova variável. Em especial, é de interesse a determinação de uma forma fechada para a matriz de aniquilação, usada no cálculo do erro de validação cruzada.
 
 A matrizes de interesse para o problema de dimensão $p+1$ tem a forma descrita na eq. \ref{eq:inc_matrix} 
 \begin{equation}

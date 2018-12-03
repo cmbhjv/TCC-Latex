@@ -125,6 +125,39 @@ O método proposto neste trabalho não realiza o ajuste direto do modelo, mas si
     \label{eq:inc_stepwise_loocv}
 \end{equation}
 
+\subsection{Complexidade algorítmica}
+
+A implementação não incremental do método \textit{stepwise} resulta no ajuste de uma curva para cada conjunto de variáveis considerado. Como apenas uma variável é acrescentada a cada etapa, o total de modelos ajustados pode então ser derivado como na eq. \ref{eq:naive_stepwise}.
+
+\begin{equation}
+    1 + \sum^{p-1}_{k=0} (p-k) = 1+p(p+1) = \frac{1}{2}(p^2+p+2)
+    \label{eq:naive_stepwise} 
+\end{equation}
+
+Quando associado ao cálculo do erro de validação cruzada \textit{leave-one-out}, para cada conjunto de varáveis considerado, é necessário o calculo de $(N-1)$ modelos, cada um excluindo uma amostra do treinamento. Dessa forma a equação eq. \ref{eq:naive_stepwise} deve ser multiplicada por esse fator.
+
+Analisando a eq. \ref{eq:lsnormal_reg}, é possível assumir a complexidade de uma implementação simples do ajuste de uma regressão linear como $\bigO{Np^2 + p^3}$. Implementações utilizando algoritmos otimizados de multiplicação e inversão de matrizes podem reduzir essa complexidade. A custo de uma predição pode ser facilmente percebido como $O(p)$.
+
+Sendo assim, a complexidade da implementação não incremental do método \textit{stepwise} pode ser derivada conforme a eq. \ref{eq:naive_stepwise_loocv}.
+\begin{equation}
+    \begin{split}
+        O(Stepwise_{LOOCV}) &= \frac{1}{2}(p^2+p+2)(N-1)(\bigO{Np^2 + p^3}+\bigO{p}) \\
+                            &= \bigO{p^2}\ \bigO{N}\ \bigO{Np^2 + p^3} \\
+                            &= \bigO{N^2p^4 + Np^5}
+    \end{split}
+    \label{eq:naive_stepwise_loocv}
+\end{equation}
+
+O método proposto nesse trabalho não realiza o ajuste direto do modelo, mas sim o cálculo de maneira incremental da matriz de aniquilação, dessa forma, além de não ser necessário o cálculo da inversão de matriz $A$ na eq. \ref{eq:lsnormal_reg}, o cálculo do erro de validação cruzada \textit{leave-one-out} pode ser calculado diretamente, sem a necessidade de $N-1$ passos. Dessa maneira o custo computacional é reduzido para o exposto na eq. \ref{eq:inc_stepwise_loocv}.
+\begin{equation}
+    \begin{split}
+        O(Stepwise_{LOOCV}^{INC}) &= \frac{1}{2}(p^2+p+2)(\bigO{N^3}+\bigO{N^2}) \\
+                            &= \bigO{p^2}\ \bigO{N^2} \\
+                            &= \bigO{N^2p^2}
+    \end{split}
+    \label{eq:inc_stepwise_loocv}
+\end{equation}
+
 \section{Testes}
 
 \subsection{Conjuntos de dados}

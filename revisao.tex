@@ -19,7 +19,7 @@ Esses modelos são lineares em relação às suas variáveis independentes, por�
 
 \subsection{Treinamento de modelos lineares}
 
-O treinamento de modelos lineares consiste em encontrar o vetor de parâmetros $W$ que maximize a similaridade entre o modelo e sistema modelado. Esse treinamento é normalmente realizado minimizando-se o somatório dos erros quadráticos (eq. \ref{eq:sq_error}) em função do vetor $W$.
+O treinamento de modelos lineares consiste em encontrar o vetor de parâmetros $W$ que maximize a similaridade entre o modelo e o sistema modelado. Esse treinamento é normalmente realizado minimizando-se o somatório dos erros quadráticos (eq. \ref{eq:sq_error}) em função do vetor $W$.
 
 % \begin{align}
 % \begin{split}
@@ -74,14 +74,14 @@ Comumente utiliza-se a norma-L2 do vetor de parâmetros como termo de regulariza
 
 A validação cruzada (\textit{cross-validation}) é um conjunto de metodologias de treinamento e validação que, de maneira simples e efetiva, permitem a estimativa do erro de generalização do modelo.
 
-No método \textit{k-fold} de validação cruzada, os dados de treinamento são divididos em k conjuntos aleatórios de tamanhos aproximadamente iguais. Realizada essa divisão, a cada iteração do treinamento, os parâmetros do modelo são determinados utilizando k-1 conjuntos e sua performance é avaliada no conjunto restante. O processo se repete até que todos os k conjuntos tenham sido utilizados para avaliação e a média das performances observadas fornecem uma estimativa da performance de generalização do modelo \cite{overfitting_crossval}.
+No método \textit{k-fold} de validação cruzada, os dados de treinamento são divididos em \textit{k} conjuntos aleatórios de tamanhos aproximadamente iguais. Realizada essa divisão, a cada iteração do treinamento, os parâmetros do modelo são determinados utilizando \textit{k}-1 conjuntos e sua performance é avaliada no conjunto restante. O processo se repete até que todos os \textit{k} conjuntos tenham sido utilizados para avaliação e a média das performances observadas fornecem uma estimativa da performance de generalização do modelo \cite{overfitting_crossval}. O algoritmo é ilustrado na Figura \ref{fig:k-fold-cross}.
 
 \begin{figure}[H]
     \centering
     \caption{Validação cruzada: \textit{5-fold}.}
     \includegraphics[width=0.7\textwidth]{imgs/rev/cross_validation}
     \legend{\textit{Fonte: Different types of Validations in Machine Learning (Cross Validation)} \cite{cross_val}}
-    \label{fig:dim_perf}
+    \label{fig:k-fold-cross}
 \end{figure}
 
 Um caso especial do método de validação descrito é o \textit{leave-one-out cross-validation} (LOOCV), onde k é igual ao total de amostras disponíveis (N), ou seja, o treinamento é realizado N vezes com N-1 amostras, e validado na amostra excluída. Tal abordagem apesar de apresentar, em geral, um custo computacional elevado, resulta em um modelo com menor variabilidade e viés para modelos de regressão linear \cite{burman}, produzindo assim resultados com melhor performance e menos \textit{overfitting}.

@@ -9,7 +9,7 @@ Hoje, aplicações tais como pesquisas web, sistemas \textit{anti-spam}, reconhe
 
 Aprendizado de máquina é o campo da computação responsável por desenvolver e empregar sistemas ou modelos que, através da sua exposição à experiências, são capazes de melhorar sua performance na realização de determinada tarefa \cite{mitchell_1997}.
 
-O processo de desenvolvimento de modelos com aprendizado de máquina pode ser dividido, em linhas gerais, em duas grandes etapas. A primeira delas refere-se à análise e tratamento dos dados. Nessa etapa procura-se identificar correlações entre as informações disponíveis e as variáveis de interesse. Além disso, são explorados possíveis filtros, transformações e outros algoritmos que possam facilitar o aprendizado do modelo. Também é necessário realizar nessa etapa a separação dos dados que serão utilizados para treinamento, validação e teste no decorrer do processo.
+O processo de desenvolvimento de modelos com aprendizado de máquina, ilustrado na Figura \ref{fig:mlflow}, pode ser dividido, em linhas gerais, em duas grandes etapas. A primeira delas refere-se à análise e tratamento dos dados. Nessa etapa procura-se identificar correlações entre as informações disponíveis e as variáveis de interesse. Além disso, são explorados possíveis filtros, transformações e outros algoritmos que possam facilitar o aprendizado do modelo. Também é necessário realizar nessa etapa a separação dos dados que serão utilizados para treinamento, validação e teste no decorrer do processo.
 
 \begin{figure}[!htb]
     \caption{Fluxo geral de desenvolvimento de sistemas de aprendizado de máquina.}
@@ -24,21 +24,21 @@ Na etapa seguinte objetiva-se obter um modelo capaz de reproduzir o comportament
 
 Os algoritmos utilizados nesta segunda etapa podem ser classificados em uma de três categorias, de acordo com as características dos dados disponíveis. \cite{ai_modern}
 \begin{itemize}
-    \item Na categoria de aprendizado não supervisionado, desenvolve-se sistemas capazes identificar padrões implícitos em um conjunto de dados não rotulados.
+    \item Na categoria de aprendizado não supervisionado, desenvolve-se sistemas capazes de identificar padrões implícitos em um conjunto de dados não rotulados.
     \item No aprendizado por reforço, os sistemas se adaptam de acordo com dados de resposta oriundos do ambiente no qual estão envolvidos.
     \item Por fim, no aprendizado supervisionado, estão modelos que, a partir de um conjunto de entradas e saídas conhecidas, são capazes de extrapolar a dinâmica do sistema em questão.
 \end{itemize}
 
 \section{Generalização e Complexidade}
 
-O processo de aprendizado supervisionado é a inferência de um mapeamento de dados de entrada a variáveis de saída a partir de um conjunto de observações. Este pode, portanto, ser interpretado como um ajuste, linear ou não, de uma curva \cite{haykin}. Consequentemente, os modelos obtidos através desse processo também estão sujeitos a \textit{overfitting} e \textit{underfitting}.
+O processo de aprendizado supervisionado é a inferência de um mapeamento de dados de entrada a variáveis de saída a partir de um conjunto de observações. Este pode, portanto, ser interpretado como um ajuste, linear ou não, de uma curva \cite{haykin}. Consequentemente, os modelos obtidos através desse processo também estão sujeitos a \textit{overfitting} e \textit{underfitting}, conforme ilustrado na Figura \ref{fig:over_underfitting}.
 
 \textit{Overfitting}, ou sobre-ajuste, é caracterizado pela alta performance no conjunto de dados de treinamento e baixa performance em dados nunca observados. Isto é, o modelo assimila desvios causados por erros de medição ou fatores aleatórios presentes no treinamento. Dessa maneira, o erro em relação aos dados de treinamento é reduzido, porém essa melhora não corresponde a uma melhora na representação da realidade.
 
 De maneira similar, o \textit{underfitting}, ou sub-ajuste, é caracterizado pela baixa performance em ambos os conjuntos de dados, indicando que o modelo utilizado não é capaz de representar de maneira satisfatória a complexidade do sistema real.
 
 \begin{figure}[H]
-    \caption{Relação entre underfitting-overfitting, generalização-complexidade e viés-variância.}
+    \caption{Relação entre \textit{underfitting-overfitting}, generalização-complexidade e viés-variância.}
     \begin{center}
     \includegraphics[width=\linewidth]{imgs/intro/over_underfitting}
     \end{center}
@@ -56,7 +56,17 @@ Pode-se ainda avaliar o sistema em termos de viés e variância (\textit{bias-va
 
 Sistemas que se utilizam de aprendizado de máquina apresentam respostas baseadas nos dados de entrada que lhe são apresentados. Dessa maneira, a determinação de quais variáveis são relevantes para o sistema é uma etapa fundamental de seu processo de desenvolvimento.
 
-A inclusão de variáveis irrelevantes resulta no aumento da complexidade do modelo, tornando-o mais suscetível ao \textit{overfitting} e menos interpretável \cite[p. 204]{intro_stat_learn}. Além disso, um número elevado de variáveis de entrada resulta em um efeito conhecido como a maldição da dimensionalidade (\textit{curse of dimensionality}), onde o aumento do número de dimensões (quantidade de variáveis), implica no aumento exponencial do número de amostras necessárias para representar o espaço de variáveis \cite[p. 34]{bishop_2006}.
+A inclusão de variáveis irrelevantes resulta no aumento da complexidade do modelo, tornando-o mais suscetível ao \textit{overfitting} e menos interpretável \cite[p. 204]{intro_stat_learn}, possivelmente prejudicando seu desempenho, conforme demonstrado pela Figura \ref{fig:dim_perf}. Além disso, um número elevado de variáveis de entrada resulta em um efeito conhecido como a maldição da dimensionalidade (\textit{curse of dimensionality}), onde o aumento do número de dimensões (quantidade de variáveis), implica no aumento exponencial do número de amostras necessárias para representar o espaço de variáveis \cite[p. 34]{bishop_2006}, tal efeito pode ser observado na Figura \ref{fig:dim_grown}.
+
+\begin{figure}[!htb]
+    \caption{Performance em relação ao número de dimensões e amostras.}
+    \begin{center}  
+    \includegraphics[width=0.5\textwidth]{imgs/rev/dim_performance}
+    \end{center}
+    \legend{Fonte: A Problem of Dimensionality: A Simple Example \cite{art:prob_dim}}
+    \label{fig:dim_perf}
+\end{figure}
+
 
 \begin{figure}[!htb]
     \caption{Crescimento do espaço de variáveis em virtude do aumento das dimensões.}
@@ -67,14 +77,6 @@ A inclusão de variáveis irrelevantes resulta no aumento da complexidade do mod
     \label{fig:dim_grown}
 \end{figure}
 
-\begin{figure}[!htb]
-    \caption{Performance em relação ao número de dimensões e amostras.}
-    \begin{center}  
-    \includegraphics[width=0.5\textwidth]{imgs/rev/dim_performance}
-    \end{center}
-    \legend{Fonte: A Problem of Dimensionality: A Simple Example \cite{art:prob_dim}}
-    \label{fig:dim_perf}
-\end{figure}
 
 É desejável então que se utilize o menor número possível de variáveis de entrada que permitam ao modelo produzir a resposta correta. Uma maneira de realizar essa redução de dimensionalidade é selecionar um subconjunto das variáveis disponíveis, descartando aquelas que apresentarem pouca ou nenhuma relevância para o problema \cite[p. 204]{intro_stat_learn}.
 

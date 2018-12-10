@@ -58,7 +58,7 @@ Em especial, a utilização desse método associada ao \textit{leave-one-out cro
 
 Para minimizar o problema do custo computacional, o método implementado utiliza o resultado apresentado na eq. \ref{eq:LOOCV_error} para calcular o erro de validação cruzada sem a necessidade de calcular $N-1$ modelos de regressão linear. Além disso, o cálculo da matriz de aniquilação é realizado de maneira incremental, conforme deduzido na eq. \ref{eq:inc_matrix_iterativa}.
 
-O Algoritmo \ref{alg:stepwiseselection} é então modificado no Algoritmo \ref{alg:incstepwiseselection} para realizar o cálculo incremental, utilizando LOOCV como métrica para seleção dos das variáveis e atualização incremental do modelo.
+O Algoritmo \ref{alg:stepwiseselection} é então modificado no Algoritmo \ref{alg:incstepwiseselection} para realizar o cálculo incremental, utilizando LOOCV como métrica para seleção das variáveis e atualização incremental do modelo.
 
 \begin{algorithm}[!htb]
     \caption{\textit{Forward Stepwise Incremental Selection}}
@@ -167,7 +167,7 @@ desenvolvido foi empregado e o erro de validação cruzada, conforme a eq. \ref{
 
 Em seguida, para cada conjunto de dados, dois modelos são treinados com parâmetros idênticos, variando-se o conjunto de variáveis. Dessa maneira, é possível estudar quais os efeitos da utilização do subconjunto proposto pelo algoritmo em relação ao conjunto completo de variáveis.
 
-Optou-se pela utilização de um modelo \textit{Perceptron} (MLP) de uma camada oculta (três camadas no total: entradas, camada oculta, saída), devido a disponibilidade implementações disponíveis tanto para o modelo, quanto para o seu treinamento e validação.
+Optou-se pela utilização de um modelo \textit{Perceptron} (MLP) de uma camada oculta (três camadas no total: entradas, camada oculta, saída), devido a disponibilidade de implementações disponíveis tanto para o modelo, quanto para o seu treinamento e validação.
 
 Utilizou-se a biblioteca Keras \cite{keras} com a interface para a linguagem R e a biblioteca Tensorflow \cite{tensorflow} como \textit{backend}. O código fonte que implementa a rede neural desenvolvida se encontra no Apêndice \ref{appendix:keras_mlp}.
 
